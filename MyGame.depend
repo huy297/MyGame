@@ -1,0 +1,43 @@
+# depslib dependency file v1.0
+1710875811 source:c:\mygame\main.cpp
+	<SDL.h>
+	"Game.h"
+	"Defs.h"
+	"Graphics.h"
+	"Structs.h"
+
+1710521505 c:\mygame\game.h
+	"defs.h"
+	<SDL.h>
+	<SDL_Image.h>
+
+1710918787 c:\mygame\defs.h
+
+1710919340 source:c:\mygame\game.cpp
+	"Game.h"
+	"Defs.h"
+	"Structs.h"
+	"map.h"
+	"Graphics.h"
+
+1710875216 c:\mygame\graphics.h
+	"Game.h"
+
+1710875288 source:c:\mygame\graphics.cpp
+	"Graphics.h"
+
+1710919370 c:\mygame\structs.h
+	"Game.h"
+
+1710919116 source:c:\mygame\struct.cpp
+	"Structs.h"
+	"Graphics.h"
+
+1710521068 c:\mygame\map.h
+	"Game.h"
+
+1710521735 source:c:\mygame\map.cpp
+	"map.h"
+	"Graphics.h"
+	"Game.h"
+
