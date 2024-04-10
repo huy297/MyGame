@@ -6,12 +6,9 @@
 #include<iostream>
 using namespace std;
 
-Entity *Player;
-Map *mp;
-Gun *gun;
-Sword *sword;
-Character *character;
 
+Character *character;
+Map *mp;
 SDL_Renderer* Game::renderer = nullptr;
 Game::Game(){
     Game::init();
@@ -44,12 +41,9 @@ void Game::init()
     }
     SDL_RenderSetLogicalSize(renderer,SCREEN_HEIGHT,SCREEN_WIDTH);
 
-    Player = new Entity();
-    Player->loadTexture("img/simple.png");
-    gun = new Gun("img/SuperGun.png", Player);
-    sword = new Sword("img/sword.png", Player);
-    character = new Character(Player,gun,sword);
+    character = new Character();
     mp = new Map();
+
 
     //knight = new Knight();
     //knight->loadTexture("img/Knight/Attacks.png");
@@ -110,7 +104,7 @@ void Game::handleEvents ()
                     case SDLK_SPACE:
                         if (character->weaponState == GUN)
                         character->gun->shot();
-                        else
+                        else if (character->weaponState == SWORD)
                         {
                             character->sword->cut();
                         }
@@ -123,6 +117,9 @@ void Game::handleEvents ()
                         character->currentWeapon = character->gun;
                         character->weaponState = GUN;
                         break;
+                   case SDLK_4:
+                        character->currentWeapon = character->grenade;
+                        character->weaponState = GRENADE;
                     default:
                         break;
                 }
@@ -135,23 +132,23 @@ void Game::handleEvents ()
     const Uint8 *keystate = SDL_GetKeyboardState(NULL);
     if (keystate[SDL_SCANCODE_W])
     {
-        Player->dy -= Player->speedy;
-        Player->dir = Up;
+        character->player->dy -= character->player->speedy;
+        character->player->dir = Up;
     }
     if (keystate[SDL_SCANCODE_S])
     {
-        Player->dy += Player->speedy;
-        Player->dir = Down;
+        character->player->dy += character->player->speedy;
+        character->player->dir = Down;
     }
     if (keystate[SDL_SCANCODE_A])
     {
-        Player->dx -= Player->speedx;
-        Player->dir = Left;
+        character->player->dx -= character->player->speedx;
+        character->player->dir = Left;
     }
     if (keystate[SDL_SCANCODE_D])
     {
-        Player->dx += Player->speedx;
-        Player->dir = Right;
+        character->player->dx += character->player->speedx;
+        character->player->dir = Right;
     }
 }
 

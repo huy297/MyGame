@@ -218,12 +218,12 @@ void Bullet::update()
 
 Sword::Sword(const char* filename, Entity *owner) : Weapon(filename, owner)
 {
-    Sword::update();
 
+    isSlashed = false;
+    Sword::update();
     PrintRect(srcRect);
     PrintRect(destRect);
 
-    isSlashed = false;
     toSlash = new SwordSlash("img/SlashSword.png",this);
 }
 
@@ -257,6 +257,7 @@ void Sword::update()
             toSlash->Time = 4;
         }
     }
+
     this->dir = owner->currentDir;
 }
 
@@ -325,12 +326,60 @@ void SwordSlash::update()
     }
 }
 
+Grenade::Grenade(const char *filename, Entity *owner) : Weapon(filename, owner)
+{
+    Grenade::setUp(owner->x,owner->y);
+}
+
+void Grenade::setUp(int x, int y)
+{
+    switch (owner->currentDir)
+    {
+    case Up:
+        MakeRect(srcRect,0,0,BLOCK,BLOCK);
+        break;
+    case Down:
+        MakeRect(srcRect,0,0,BLOCK,BLOCK);
+        break;
+    case Right:
+        MakeRect(srcRect,0,0,BLOCK,BLOCK);
+        break;
+    case Left:
+        MakeRect(srcRect,0,0,BLOCK,BLOCK);
+        break;
+    }
+    Grenade::update();
+}
+
+void Grenade::update()
+{
+    int x = owner->x;
+    int y = owner->y;
+    switch (owner->currentDir)
+    {
+    case Up:
+        MakeRect(destRect,x+30,y+10,BLOCK,BLOCK);
+        break;
+    case Down:
+        MakeRect(destRect,x,y+15,BLOCK,BLOCK);
+        break;
+    case Right:
+        MakeRect(destRect,x+20,y+20,BLOCK,BLOCK);
+        break;
+    case Left:
+        MakeRect(destRect,x,y+10,BLOCK,BLOCK);
+        break;
+    }
+}
 
 
-Character::Character(Entity *player, Gun *gun, Sword *sword) {
-    this->player = player;
-    this->sword = sword;
-    this->gun = gun;
+Character::Character() {
+    cerr << " ? ?? " << endl;
+    this->player = new Entity();
+    this->player->loadTexture("img/simple.png");
+    this->sword = new Sword("img/sword.png", this->player);
+    this->gun = new Gun("img/SuperGun.png", this->player);
+    this->grenade = new Grenade("img/grenade.png", this->player);
     currentWeapon = sword;
 }
 Character::~Character() {}
@@ -338,4 +387,5 @@ void Character::update() {
     player->update();
     gun->update();
     sword->update();
+    grenade->update();
 }

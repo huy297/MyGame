@@ -7,7 +7,7 @@ using namespace std;
 
 enum WeaponState
 {
-    SWORD,GUN,NONE
+    SWORD,GUN,GRENADE,NONE
 };
 
 class Entity {
@@ -97,16 +97,29 @@ public:
     bool isSlashed;
 };
 
+class Grenade : public Weapon
+{
+public:
+    Grenade(const char* filename, Entity *owner);
+    ~Grenade();
+    void update();
+    void shot();
+    void setUp(int x, int y);
+public:
+    int Time;
+};
+
 
 class Character {
 public:
-    Character(Entity *player, Gun *gun, Sword *sword);
+    Character();
     ~Character();
     void update();
 public:
     Entity *player;
     Gun *gun;
     Sword *sword;
+    Grenade *grenade;
     Weapon *currentWeapon;
     WeaponState weaponState = NONE;
 };

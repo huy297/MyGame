@@ -13,7 +13,7 @@
 
 1712736467 c:\mygame\defs.h
 
-1712687859 source:c:\mygame\game.cpp
+1712774743 source:c:\mygame\game.cpp
 	"Game.h"
 	"Defs.h"
 	"Structs.h"
@@ -25,15 +25,15 @@
 	"Game.h"
 	"structs.h"
 
-1712743760 source:c:\mygame\graphics.cpp
+1712774827 source:c:\mygame\graphics.cpp
 	"Graphics.h"
 	<bits/stdc++.h>
 
-1712688026 c:\mygame\structs.h
+1712774587 c:\mygame\structs.h
 	"Game.h"
 	<vector>
 
-1712743995 source:c:\mygame\struct.cpp
+1712775533 source:c:\mygame\struct.cpp
 	"Structs.h"
 	"Graphics.h"
 	<iostream>
