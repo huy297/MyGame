@@ -13,23 +13,23 @@ Map::~Map(){}
 
 void Map::LoadMap()
 {
-    for (int i=0; i<60; i++)
-        for (int j=0; j<60; j++) MyMap[i][j] = (i+j)%2;
+    for (int i=0; i<15; i++)
+        for (int j=0; j<15; j++) MyMap[i][j] = i <= 7;
 }
 
 void Map::DrawMap()
 {
-    for (int i=0; i<60; i++)
+    for (int i=0; i<15; i++)
     {
-        for (int j=0; j<60; j++)
+        for (int j=0; j<15; j++)
         {
             switch (MyMap[i][j])
             {
             case 0:
-                Game::addTexture(grass,i*16,j*16);
+                Game::addTexture(grass,i*48,j*48);
                 break;
             case 1:
-                Game::addTexture(ground,i*16,j*16);
+                Game::addTexture(ground,i*48,j*48);
                 break;
             default:
                 break;

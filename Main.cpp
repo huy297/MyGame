@@ -11,10 +11,10 @@ int main(int argc, char* argv[])
     game = new Game();
     while (true)
     {
-       game->handleEvents();
-       game->updateEvents();
-       game->render();
-       SDL_Delay(50);
+      game->handleEvents();
+      game->updateEvents();
+        game->render();
+        SDL_Delay(100);
     }
-    return 0;
+   return 0;
 }

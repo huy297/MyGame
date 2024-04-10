@@ -34,7 +34,10 @@
 		<Unit filename="Defs.h" />
 		<Unit filename="Game.cpp" />
 		<Unit filename="Game.h" />
+		<Unit filename="Graphics.cpp" />
 		<Unit filename="Main.cpp" />
+		<Unit filename="Map.cpp" />
+		<Unit filename="Struct.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
