@@ -308,7 +308,6 @@ void SwordSlash::setUp(int x, int y)
 
 void SwordSlash::update()
 {
-    Time--;
     switch (owner->dir)
     {
     case Up:
@@ -329,6 +328,12 @@ void SwordSlash::update()
 Grenade::Grenade(const char *filename, Entity *owner) : Weapon(filename, owner)
 {
     Grenade::setUp(owner->x,owner->y);
+    isActived = false;
+    pressTime = 0;
+    releaseTime = 0;
+    speed = 0;
+    Time = 0;
+    isReleased = false;
 }
 
 void Grenade::setUp(int x, int y)
@@ -353,8 +358,36 @@ void Grenade::setUp(int x, int y)
 
 void Grenade::update()
 {
+    if (isReleased)
+    {
+        Time--;
+        if (Time == 0) {
+            // explosion;
+            // but now for testing purpose, let it rollback to old position
+            isReleased = false;
+            setUp(owner->x,owner->y);
+            return;
+        }
+        switch (dir)
+        {
+        case Up:
+            destRect->y -= speed;
+            break;
+        case Down:
+            destRect->y+= speed;
+            break;
+        case Right:
+            destRect->x += speed;
+            break;
+        case Left:
+            destRect->x -= speed;
+            break;
+        }
+        return;
+    }
     int x = owner->x;
     int y = owner->y;
+    dir = owner->currentDir;
     switch (owner->currentDir)
     {
     case Up:
@@ -372,6 +405,47 @@ void Grenade::update()
     }
 }
 
+void Grenade::active()
+{
+    if (isActived) return;
+    isActived = true;
+    pressTime =SDL_GetTicks();
+}
+
+void Grenade::mapSpeed()
+{
+    int delta = releaseTime - pressTime;
+    delta = min(delta,600);
+    cerr << "press time" << delta << endl;
+    speed = delta / 20 + 3;
+    delta /= 150;
+    switch (delta)
+    {
+    case 0:
+        Time = 7;
+    case 1:
+        Time = 11;
+    case 2:
+        Time = 11;
+    case 3:
+        Time = 13;
+    case 4:
+        Time = 14;
+    }
+}
+
+vector<Grenade*> Grenade::onGoing;
+
+void Grenade::release()
+{
+    releaseTime = SDL_GetTicks();
+    Grenade::mapSpeed();
+    onGoing.push_back(this);
+    isActived = false;
+    isReleased = true;
+    MakeRect(srcRect,0,2*BLOCK,BLOCK,BLOCK);
+}
+
 
 Character::Character() {
     cerr << " ? ?? " << endl;
@@ -381,6 +455,7 @@ Character::Character() {
     this->gun = new Gun("img/SuperGun.png", this->player);
     this->grenade = new Grenade("img/grenade.png", this->player);
     currentWeapon = sword;
+    weaponState = SWORD;
 }
 Character::~Character() {}
 void Character::update() {

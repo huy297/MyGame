@@ -108,6 +108,10 @@ void Game::handleEvents ()
                         {
                             character->sword->cut();
                         }
+                        else if (character->weaponState == GRENADE)
+                        {
+                            character->grenade->active();
+                        }
                         break;
                     case SDLK_1:
                         character->currentWeapon = character->sword;
@@ -124,6 +128,16 @@ void Game::handleEvents ()
                         break;
                 }
                 break;
+            case SDL_KEYUP:
+                switch (event.key.keysym.sym)
+                {
+                    case SDLK_SPACE:
+                        character->grenade->release();
+                   //     character->currentWeapon = character->sword;
+                     //   character->weaponState = SWORD;
+                    default:
+                        break;
+                }
         }
 
     }

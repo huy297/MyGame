@@ -103,10 +103,18 @@ public:
     Grenade(const char* filename, Entity *owner);
     ~Grenade();
     void update();
-    void shot();
+    void active();
+    void release();
     void setUp(int x, int y);
+    void mapSpeed();
 public:
     int Time;
+    int dir;
+    bool isActived;
+    bool isReleased;
+    int pressTime,releaseTime;
+    int speed;
+    static vector<Grenade*> onGoing;
 };
 
 
