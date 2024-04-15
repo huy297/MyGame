@@ -11,10 +11,9 @@ public:
 
     void LoadMap();
     void DrawMap();
-    SDL_Rect src,dest;
-    SDL_Texture *ground;
-    SDL_Texture *grass;
-    SDL_Texture *tree;
+    SDL_Rect *destRect;
+    SDL_Texture *texture;
+    SDL_Rect *srcRect;
     int MyMap[64][64];
 };
 

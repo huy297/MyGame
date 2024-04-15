@@ -38,6 +38,7 @@
 		<Unit filename="Main.cpp" />
 		<Unit filename="Map.cpp" />
 		<Unit filename="Struct.cpp" />
+		<Unit filename="Weapon.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

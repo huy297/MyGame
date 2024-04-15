@@ -28,6 +28,35 @@ public:
   int currentDir;
 };
 
+
+class Weapon
+{
+public:
+    Weapon(const char* filename, Entity *owner);
+    ~Weapon();
+    void loadTexture(const char *filename);
+    void setOwner(Entity *owner);
+public:
+    Entity *owner;
+    SDL_Texture *texture;
+    SDL_Rect *srcRect;
+    SDL_Rect *destRect;
+    int dir;
+};
+
+class WeaponEffect
+{
+public:
+    WeaponEffect(const char *filename, Weapon *owner);
+    ~WeaponEffect();
+public:
+    SDL_Texture *texture;
+    SDL_Rect *srcRect;
+    SDL_Rect *destRect;
+    int Time;
+    Weapon *owner;
+};
+
 class Bullet
 {
 public:
@@ -45,22 +74,8 @@ public:
     int Time;
 };
 
-class Weapon
-{
-public:
-    Weapon(const char* filename, Entity *owner);
-    ~Weapon();
-    void loadTexture(const char *filename);
-    void setOwner(Entity *owner);
-public:
-    Entity *owner;
-    SDL_Texture *texture;
-    SDL_Rect *srcRect;
-    SDL_Rect *destRect;
-    int dir;
-};
 
-class SwordSlash
+class SwordSlash : public WeaponEffect
 {
 public:
     SwordSlash(const char *filename, Weapon *owner);
@@ -69,11 +84,7 @@ public:
     void update();
     void setUp(int x, int y);
 public:
-    SDL_Texture *texture;
-    SDL_Rect *srcRect;
-    SDL_Rect *destRect;
-    int Time;
-    Weapon *owner;
+
 };
 
 class Gun : public Weapon{
@@ -97,6 +108,15 @@ public:
     bool isSlashed;
 };
 
+class Explosion : public WeaponEffect
+{
+public:
+    Explosion(const char *filename, Weapon *owner);
+    ~Explosion();
+    void update();
+    void setUp(int x, int y);
+};
+
 class Grenade : public Weapon
 {
 public:
@@ -105,15 +125,19 @@ public:
     void update();
     void active();
     void release();
-    void setUp(int x, int y);
+    void setUp();
     void mapSpeed();
+    void explose();
+    void backToPos();
 public:
     int Time;
     int dir;
     bool isActived;
     bool isReleased;
+    bool isExplosed;
     int pressTime,releaseTime;
     int speed;
+    Explosion *explosion;
     static vector<Grenade*> onGoing;
 };
 

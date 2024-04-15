@@ -1,8 +1,8 @@
 #ifndef _DEFS__H
 #define _DEFS_H
 
-#define SCREEN_WIDTH 720
-#define SCREEN_HEIGHT 720
+#define SCREEN_WIDTH 880
+#define SCREEN_HEIGHT 880
 #define WINDOW_TITLE "MyGame"
 #define SPRITE_X 48
 #define SPRITE_Y 48

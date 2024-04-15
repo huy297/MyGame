@@ -18,8 +18,8 @@ Entity::Entity(){
     dy = 0;
     speedx = 10;
     speedy = 10;
-    x = 100;
-    y = 100;
+    x = SCREEN_HEIGHT/2;
+    y = SCREEN_WIDTH/2;
 
     srcRect = new SDL_Rect();
 
@@ -30,8 +30,8 @@ Entity::Entity(){
 
 
     destRect = new SDL_Rect();
-    destRect->x = 100; // Vị trí x trên màn hình
-    destRect->y = 100; // Vị trí y trên màn hình
+    destRect->x = x; // Vị trí x trên màn hình
+    destRect->y = y; // Vị trí y trên màn hình
     destRect->w = SPRITE_X; // Width of displayed frame on screen
     destRect->h = SPRITE_Y; // Height of displayed frame on screen
 
@@ -101,6 +101,19 @@ void Weapon::loadTexture(const char* filename) {
 void Weapon::setOwner(Entity *owner) {
     this->owner = owner;
 }
+
+WeaponEffect::WeaponEffect(const char* filename, Weapon *owner)
+{
+    texture = IMG_LoadTexture(Game::renderer,filename);
+    srcRect = new SDL_Rect();
+    destRect = new SDL_Rect();
+    this->owner = owner;
+}
+WeaponEffect::~WeaponEffect()
+{
+
+}
+
 
 Gun::Gun(const char *filename, Entity *owner) : Weapon(filename,owner) {
     Gun::update();
@@ -267,13 +280,8 @@ void Sword::cut()
     toSlash->setUp(destRect->x,destRect->y);
 }
 
-SwordSlash::SwordSlash(const char *filename, Weapon *owner)
+SwordSlash::SwordSlash(const char *filename, Weapon *owner) : WeaponEffect(filename,owner)
 {
-    texture = IMG_LoadTexture(Game::renderer,filename);
-    srcRect = new SDL_Rect();
-    destRect = new SDL_Rect();
-    Time = 4;
-    this->owner = owner;
     SwordSlash::setUp(owner->destRect->x,owner->destRect->y);
 }
 
@@ -285,6 +293,7 @@ SwordSlash::~SwordSlash()
 void SwordSlash::setUp(int x, int y)
 {
     // remember -3 to render
+    Time = 4;
     switch (owner->dir)
     {
     case Up:
@@ -323,20 +332,23 @@ void SwordSlash::update()
         srcRect->x += 48;
         break;
     }
+    Time--;
 }
 
 Grenade::Grenade(const char *filename, Entity *owner) : Weapon(filename, owner)
 {
-    Grenade::setUp(owner->x,owner->y);
     isActived = false;
     pressTime = 0;
     releaseTime = 0;
     speed = 0;
     Time = 0;
     isReleased = false;
+    isExplosed = false;
+    Grenade::setUp();
+
 }
 
-void Grenade::setUp(int x, int y)
+void Grenade::setUp()
 {
     switch (owner->currentDir)
     {
@@ -356,35 +368,8 @@ void Grenade::setUp(int x, int y)
     Grenade::update();
 }
 
-void Grenade::update()
+void Grenade::backToPos ()
 {
-    if (isReleased)
-    {
-        Time--;
-        if (Time == 0) {
-            // explosion;
-            // but now for testing purpose, let it rollback to old position
-            isReleased = false;
-            setUp(owner->x,owner->y);
-            return;
-        }
-        switch (dir)
-        {
-        case Up:
-            destRect->y -= speed;
-            break;
-        case Down:
-            destRect->y+= speed;
-            break;
-        case Right:
-            destRect->x += speed;
-            break;
-        case Left:
-            destRect->x -= speed;
-            break;
-        }
-        return;
-    }
     int x = owner->x;
     int y = owner->y;
     dir = owner->currentDir;
@@ -405,6 +390,54 @@ void Grenade::update()
     }
 }
 
+void Grenade::update()
+{
+    if (isExplosed)
+    {
+        if (explosion->Time == 0)
+        {
+            isExplosed = false;
+            Grenade::setUp();
+            Grenade::backToPos();
+        }
+        else explosion->update();
+        return;
+    }
+    if (isReleased)
+    {
+        Time--;
+        if (Time == 0) {
+            // explosion;
+            // but now for testing purpose, let it rollback to old position
+            isReleased = false;
+            isExplosed = true;
+            Grenade::explose();
+            return;
+         }
+        if (Time == 4)
+        {
+            speed = 0;
+        }
+        switch (dir)
+        {
+        case Up:
+            destRect->y -= speed;
+            break;
+        case Down:
+            destRect->y+= speed;
+            break;
+        case Right:
+            destRect->x += speed;
+            break;
+        case Left:
+            destRect->x -= speed;
+            break;
+        }
+        return;
+    }
+    Grenade::backToPos();
+}
+
 void Grenade::active()
 {
     if (isActived) return;
@@ -422,15 +455,15 @@ void Grenade::mapSpeed()
     switch (delta)
     {
     case 0:
-        Time = 7;
+        Time = 10;
     case 1:
-        Time = 11;
-    case 2:
-        Time = 11;
-    case 3:
-        Time = 13;
-    case 4:
         Time = 14;
+    case 2:
+        Time = 14;
+    case 3:
+        Time = 16;
+    case 4:
+        Time = 18;
     }
 }
 
@@ -438,6 +471,7 @@ vector<Grenade*> Grenade::onGoing;
 
 void Grenade::release()
 {
+    if (isReleased) return;
     releaseTime = SDL_GetTicks();
     Grenade::mapSpeed();
     onGoing.push_back(this);
@@ -446,6 +480,34 @@ void Grenade::release()
     MakeRect(srcRect,0,2*BLOCK,BLOCK,BLOCK);
 }
 
+void Grenade::explose()
+{
+    this->explosion = new Explosion("img/explosion.png",this);
+
+}
+
+Explosion::Explosion(const char* filename, Weapon *owner) : WeaponEffect(filename,owner)
+{
+    Explosion::setUp(owner->destRect->x-50,owner->destRect->y-50);
+}
+
+Explosion::~Explosion()
+{
+
+}
+
+void Explosion::setUp(int x, int y)
+{
+    Time = 4;
+    MakeRect(srcRect,0,0,8*BLOCK,8*BLOCK);
+    MakeRect(destRect,x,y,8*BLOCK,8*BLOCK);
+}
+
+void Explosion::update()
+{
+    Time--;
+    srcRect->y += 8*BLOCK;
+}
 
 Character::Character() {
     cerr << " ? ?? " << endl;
@@ -462,5 +524,5 @@ void Character::update() {
     player->update();
     gun->update();
     sword->update();
-    grenade->update();
+   grenade->update();
 }

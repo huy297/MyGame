@@ -8,6 +8,8 @@ using namespace std;
 
 
 Character *character;
+int First_X,First_Y;
+int OffSet_X, OffSet_Y;
 Map *mp;
 SDL_Renderer* Game::renderer = nullptr;
 Game::Game(){
@@ -44,6 +46,8 @@ void Game::init()
     character = new Character();
     mp = new Map();
 
+    First_X = character->player->x;
+    First_Y = character->player->y;
 
     //knight = new Knight();
     //knight->loadTexture("img/Knight/Attacks.png");
@@ -53,6 +57,8 @@ void Game::init()
 void Game::updateEvents()
 {
     character->update();
+    OffSet_X = character->player->x - First_X;
+    OffSet_Y = character->player->y - First_Y;
 }
 void Game::handleEvents ()
 {
@@ -132,7 +138,10 @@ void Game::handleEvents ()
                 switch (event.key.keysym.sym)
                 {
                     case SDLK_SPACE:
-                        character->grenade->release();
+                        if (character->weaponState == GRENADE)
+                        {
+                            character->grenade->release();
+                        }
                    //     character->currentWeapon = character->sword;
                      //   character->weaponState = SWORD;
                     default:
@@ -180,9 +189,10 @@ void Game::render()
 {
     SDL_SetRenderDrawColor(renderer,0,255,0,255);
     SDL_RenderClear(renderer);
-    mp->DrawMap();
+    Graphics::updateOffSet(OffSet_X,OffSet_Y);
 //    Graphics::blitRect(Player->texture,Player->srcRect,Player->destRect);
 //    Graphics::blitRect(gun->texture,gun->srcRect,gun->destRect);
+    Graphics::drawMap(mp);
     Graphics::drawCharacter(character);
     SDL_RenderPresent(renderer);
 }
