@@ -1,5 +1,6 @@
 #include "Structs.h"
 #include "Graphics.h"
+#include "Logic.h"
 #include<iostream>
 using namespace std;
 
@@ -20,6 +21,7 @@ Entity::Entity(){
     speedy = 10;
     x = SCREEN_HEIGHT/2;
     y = SCREEN_WIDTH/2;
+   // x = 0; y = 0;
 
     srcRect = new SDL_Rect();
 
@@ -51,6 +53,11 @@ void Entity::loadTexture (const char* filename)
 void Entity::update()
 {
     bool isMove = dir;
+    if (Logic::canMove(destRect->x+dx,destRect->y+dy,this->dir) == 0)
+    {
+        dx = 0;
+        dy = 0;
+    }
     destRect->x += dx;
     destRect->y += dy;
     dx = 0; dy = 0;

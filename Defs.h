@@ -15,4 +15,7 @@
 #define Left 3
 #define Right 4
 
+//
+#define MAPSIZE 80
+
 #endif // _DEFS__H

@@ -11,9 +11,9 @@
 	<SDL.h>
 	<SDL_Image.h>
 
-1713206538 c:\mygame\defs.h
+1713712991 c:\mygame\defs.h
 
-1713209814 source:c:\mygame\game.cpp
+1713793702 source:c:\mygame\game.cpp
 	"Game.h"
 	"Defs.h"
 	"Structs.h"
@@ -34,18 +34,33 @@
 	"Game.h"
 	<vector>
 
-1713210178 source:c:\mygame\struct.cpp
+1713793280 source:c:\mygame\struct.cpp
 	"Structs.h"
 	"Graphics.h"
+	"Logic.h"
 	<iostream>
 
-1713208477 c:\mygame\map.h
+1713779868 c:\mygame\map.h
 	"Game.h"
+	"Defs.h"
+	<string>
 
-1713208594 source:c:\mygame\map.cpp
+1713794013 source:c:\mygame\map.cpp
 	"map.h"
 	"Graphics.h"
 	"Game.h"
+	"iostream"
+	<string.h>
 
 1712858346 c:\mygame\weapon.h
+
+1713794977 c:\mygame\logic.h
+	"map.h"
+	"defs.h"
+	"iostream"
+	"math.h"
+
+1713788374 c:\mygame\math.h
+	"defs.h"
+	<SDL.h>
 

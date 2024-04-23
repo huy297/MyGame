@@ -35,10 +35,13 @@
 		<Unit filename="Game.cpp" />
 		<Unit filename="Game.h" />
 		<Unit filename="Graphics.cpp" />
+		<Unit filename="Logic.h" />
 		<Unit filename="Main.cpp" />
 		<Unit filename="Map.cpp" />
+		<Unit filename="Math.h" />
 		<Unit filename="Struct.cpp" />
 		<Unit filename="Weapon.h" />
+		<Unit filename="map.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
