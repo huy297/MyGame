@@ -39,7 +39,8 @@ public:
     {
         int v = (x)/SPRITE_X;
         int u = (y)/SPRITE_Y;
-        return Map::isBlocked[u][v];
+     //   cout << x << ' ' << y << ' ' << u << ' ' << v << ' ' << Map::isBlocked[u][v] << " ???\n";
+        return Map::isBlocked[u][v] == 0;
     }
 };
 

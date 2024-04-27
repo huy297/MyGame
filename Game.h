@@ -2,8 +2,11 @@
 #define Game_h
 
 #include "defs.h"
+#include "Structs.h"
+#include<vector>
 #include <SDL.h>
 #include<SDL_Image.h>
+using namespace std;
 
 class Game
 {
@@ -19,6 +22,7 @@ public:
 public:
     SDL_Window *window;
     static SDL_Renderer *renderer;
+    static vector<Bot*> bot;
 };
 
 #endif // Game_h

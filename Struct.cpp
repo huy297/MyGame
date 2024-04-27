@@ -214,6 +214,11 @@ void Bullet::setUp(int x, int y)
 
 void Bullet::update()
 {
+    if (Logic::canGetThrough(destRect->x,destRect->y) == false)
+    {
+        Time = 0;
+        return;
+    }
     Time--;
     switch (dir)
     {
@@ -413,6 +418,10 @@ void Grenade::update()
     if (isReleased)
     {
         Time--;
+        if (Logic::canGetThrough(destRect->x,destRect->y) == false)
+        {
+            Time = 0;
+        }
         if (Time == 0) {
             // explosion;
             // but now for testing purpose, let it rollback to old position
@@ -533,3 +542,6 @@ void Character::update() {
     sword->update();
    grenade->update();
 }
+
+Bot::Bot() : Character() {}
+Bot::~Bot() {}

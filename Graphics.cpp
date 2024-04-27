@@ -59,6 +59,11 @@ void Graphics::updateOffSet(int OffSet_X, int OffSet_Y)
 }
 void Graphics::drawCharacter(Character *character) {
     Graphics::blitRect(character->player->texture, character->player->srcRect, character->player->destRect);
+    for (Bot* x : Game::bot)
+    {
+        Character *character = x;
+        Graphics::blitRect(character->player->texture, character->player->srcRect, character->player->destRect);
+    }
   //  Graphics::blitRect(character->gun->texture, character->gun->srcRect, character->gun->destRect);
 
     if (character->sword->isSlashed)

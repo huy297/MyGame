@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "Defs.h"
-#include "Structs.h"
+//#include "Structs.h"
 #include "map.h"
 #include "Graphics.h"
 #include<iostream>
@@ -12,6 +12,7 @@ int First_X,First_Y;
 int OffSet_X, OffSet_Y;
 Map *mp;
 SDL_Renderer* Game::renderer = nullptr;
+vector<Bot*> Game::bot;
 Game::Game(){
     Game::init();
 }
@@ -52,6 +53,9 @@ void Game::init()
     //knight = new Knight();
     //knight->loadTexture("img/Knight/Attacks.png");
     //std::cout << " ???";
+
+    Bot *dak = new Bot();
+    bot.push_back(dak);
 }
 
 void Game::updateEvents()
@@ -63,40 +67,6 @@ void Game::updateEvents()
 void Game::handleEvents ()
 {
     SDL_Event event;
-//    while (SDL_PollEvent(&event))
-//    {
-//        switch(event.type)
-//        {
-//            case SDL_QUIT:
-//                exit(0);
-//                break;
-//            case SDL_KEYDOWN:
-//                switch (event.key.keysym.sym)
-//                {
-//                case SDLK_w:
-//                    Player->dy -= Player->speedy;
-//                    Player->dir = Up;
-//                    break;
-//                case SDLK_s:
-//                    Player->dy += Player->speedy;
-//                    Player->dir = Down;
-//                    break;
-//                case SDLK_a:
-//                    Player->dir = Left;
-//                    Player->dx -= Player->speedx;
-//                   break;
-//                case SDLK_d:
-//                    Player->dx += Player->speedx;
-//                    Player->dir = Right;
-//                    break;
-//                case SDLK_SPACE:
-//                    character->gun->shot();
-//                    break;
-//                default:
-//                    break;
-//                }
-//        }
-//    }
     while (SDL_PollEvent(&event))
     {
         switch(event.type)
@@ -196,5 +166,4 @@ void Game::render()
     Graphics::drawCharacter(character);
     SDL_RenderPresent(renderer);
 }
-
 

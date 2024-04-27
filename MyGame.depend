@@ -6,17 +6,18 @@
 	"Graphics.h"
 	"Structs.h"
 
-1710521505 c:\mygame\game.h
+1714127626 c:\mygame\game.h
 	"defs.h"
+	"Structs.h"
+	<vector>
 	<SDL.h>
 	<SDL_Image.h>
 
 1713712991 c:\mygame\defs.h
 
-1713793702 source:c:\mygame\game.cpp
+1714127640 source:c:\mygame\game.cpp
 	"Game.h"
 	"Defs.h"
-	"Structs.h"
 	"map.h"
 	"Graphics.h"
 	<iostream>
@@ -26,15 +27,15 @@
 	"structs.h"
 	"map.h"
 
-1713210294 source:c:\mygame\graphics.cpp
+1714127646 source:c:\mygame\graphics.cpp
 	"Graphics.h"
 	<bits/stdc++.h>
 
-1712942362 c:\mygame\structs.h
-	"Game.h"
+1714127502 c:\mygame\structs.h
+	<SDL.h>
 	<vector>
 
-1713793280 source:c:\mygame\struct.cpp
+1714126787 source:c:\mygame\struct.cpp
 	"Structs.h"
 	"Graphics.h"
 	"Logic.h"
@@ -54,7 +55,7 @@
 
 1712858346 c:\mygame\weapon.h
 
-1713794977 c:\mygame\logic.h
+1714127230 c:\mygame\logic.h
 	"map.h"
 	"defs.h"
 	"iostream"

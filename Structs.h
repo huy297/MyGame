@@ -1,7 +1,8 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-#include "Game.h"
+//#include "Game.h"
+#include<SDL.h>
 #include<vector>
 using namespace std;
 
@@ -155,4 +156,12 @@ public:
     Weapon *currentWeapon;
     WeaponState weaponState = NONE;
 };
+
+class Bot : public Character
+{
+public:
+    Bot();
+    ~Bot();
+};
+
 #endif // STRUCTS_H
