@@ -5,11 +5,31 @@
 #include "defs.h"
 #include "iostream"
 #include "math.h"
+#include <bits/stdc++.h>
+mt19937 ran(time(0));
 using namespace std;
 
 class Logic
 {
 public:
+    static pair<int,int> coordToBlock(int x, int y)
+    {
+
+    }
+    static bool intersect(SDL_Rect *a, SDL_Rect *b)
+    {
+        if (a->x == b->x && a->y == b->y && a->w == b->w && a->h == b->h) return false;
+        int x = max(a->x,b->x);
+        int y = max(a->y,b->y);
+        int u = min(a->x+a->w,b->x+b->w);
+        int v = min(a->y+b->h,b->y+b->h);
+        cout << x << ' ' << y << ' ' << u << ' ' <<v << " ?\n";
+        return x < u && y < v;
+    }
+    static int Rand(int l, int r)
+    {
+        return l + ran()%(r-l+1);
+    }
     static bool canMove(int x, int y, int dir)
     {
 //        x += SPRITE_X;
@@ -33,6 +53,7 @@ public:
         }
         int v = (x+deltaX)/SPRITE_X;
         int u = (y+deltaY)/SPRITE_Y;
+     //   cout << x << ' ' << y << ' ' << u << ' ' << v << " why still moving\n";
         return Map::isWalkable[u][v];
     }
     static bool canGetThrough(int x, int y)

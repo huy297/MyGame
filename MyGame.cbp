@@ -40,6 +40,7 @@
 		<Unit filename="Map.cpp" />
 		<Unit filename="Math.h" />
 		<Unit filename="Struct.cpp" />
+		<Unit filename="Structs.h" />
 		<Unit filename="Weapon.h" />
 		<Unit filename="map.h" />
 		<Extensions>

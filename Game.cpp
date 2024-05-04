@@ -12,7 +12,8 @@ int First_X,First_Y;
 int OffSet_X, OffSet_Y;
 Map *mp;
 SDL_Renderer* Game::renderer = nullptr;
-vector<Bot*> Game::bot;
+vector<Bot*> Bot::bot;
+vector<Bullet*> Gun::bullet;
 Game::Game(){
     Game::init();
 }
@@ -55,12 +56,13 @@ void Game::init()
     //std::cout << " ???";
 
     Bot *dak = new Bot();
-    bot.push_back(dak);
+    Bot::bot.push_back(dak);
 }
 
 void Game::updateEvents()
 {
     character->update();
+    for (auto u : Bot::bot) u->update();
     OffSet_X = character->player->x - First_X;
     OffSet_Y = character->player->y - First_Y;
 }
@@ -160,10 +162,9 @@ void Game::render()
     SDL_SetRenderDrawColor(renderer,0,255,0,255);
     SDL_RenderClear(renderer);
     Graphics::updateOffSet(OffSet_X,OffSet_Y);
-//    Graphics::blitRect(Player->texture,Player->srcRect,Player->destRect);
-//    Graphics::blitRect(gun->texture,gun->srcRect,gun->destRect);
     Graphics::drawMap(mp);
     Graphics::drawCharacter(character);
+    Graphics::drawAll();
     SDL_RenderPresent(renderer);
 }
 

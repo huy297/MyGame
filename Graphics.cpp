@@ -58,12 +58,9 @@ void Graphics::updateOffSet(int OffSet_X, int OffSet_Y)
   //  cout << "OffSet " << OffSet_X << ' ' << OffSet_Y << endl;
 }
 void Graphics::drawCharacter(Character *character) {
+
     Graphics::blitRect(character->player->texture, character->player->srcRect, character->player->destRect);
-    for (Bot* x : Game::bot)
-    {
-        Character *character = x;
-        Graphics::blitRect(character->player->texture, character->player->srcRect, character->player->destRect);
-    }
+
   //  Graphics::blitRect(character->gun->texture, character->gun->srcRect, character->gun->destRect);
 
     if (character->sword->isSlashed)
@@ -80,11 +77,22 @@ void Graphics::drawCharacter(Character *character) {
         Graphics::drawWeapon(character->currentWeapon);
     }
 
-    for (auto currentBullet : character->gun->bullet)
+     for (auto currentBullet : character->gun->bullet)
     {
        // cerr << currentBullet->srcRect->x << ' ' << currentBullet->srcRect->y << endl;
         Graphics::drawBullet(currentBullet);
     }
+}
+
+
+void Graphics::drawAll()
+{
+    //cout << "being called" << endl;
+    for (Bot* x : Bot::bot)
+    {
+        drawCharacter(x);
+    }
+
 }
 
 void Graphics::drawMap(Map *MAP)

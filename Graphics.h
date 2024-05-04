@@ -18,6 +18,7 @@ public:
     static void drawWeapon(Weapon *weapon);
     static void drawWeaponEffect(WeaponEffect *eff);
     static void backGround(SDL_Texture *texture, SDL_Rect *src, SDL_Rect *dest);
+    static void drawAll();
 };
 #endif // Graphics_H
 

@@ -95,7 +95,7 @@ public:
     void update();
     void shot();
 public:
-    std::vector<Bullet*> bullet;
+    static std::vector<Bullet*> bullet;
 };
 class Sword : public Weapon
 {
@@ -162,6 +162,8 @@ class Bot : public Character
 public:
     Bot();
     ~Bot();
+    void update();
+    static vector<Bot*> bot;
 };
 
 #endif // STRUCTS_H

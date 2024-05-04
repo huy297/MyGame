@@ -22,7 +22,7 @@ public:
 public:
     SDL_Window *window;
     static SDL_Renderer *renderer;
-    static vector<Bot*> bot;
+   // static vector<Bot*> bot;
 };
 
 #endif // Game_h

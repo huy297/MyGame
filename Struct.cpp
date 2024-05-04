@@ -1,11 +1,22 @@
 #include "Structs.h"
 #include "Graphics.h"
 #include "Logic.h"
+#include "Math.h"
 #include<iostream>
 using namespace std;
 
 int DirectionY[] = {0,-1,1,0,0};
 int DirectionX[] = {0,0,0,-1,1};
+
+bool canGo(SDL_Rect *dest)
+{
+    for (auto u : Bot::bot)
+    {
+       // cout << u->player->destRect->x << ' ' << u->player->destRect->y << ' ' << player->destRect->x << ' ' << player->destRect->y << " dmm\n";
+        if (Logic::intersect(u->player->destRect,dest)) return false;
+    }
+    return true;
+}
 
 void MakeRect (SDL_Rect *rect, int x, int y, int w, int h) {
     rect->x = x;
@@ -60,6 +71,11 @@ void Entity::update()
     }
     destRect->x += dx;
     destRect->y += dy;
+    if (canGo(destRect) == false)
+    {
+        destRect->x -= dx;
+        destRect->y -= dy;
+    }
     dx = 0; dy = 0;
     if (dir == Up)
     {
@@ -214,7 +230,7 @@ void Bullet::setUp(int x, int y)
 
 void Bullet::update()
 {
-    if (Logic::canGetThrough(destRect->x,destRect->y) == false)
+    if (Logic::canGetThrough(destRect->x,destRect->y) == false || canGo(destRect) == 0)
     {
         Time = 0;
         return;
@@ -418,7 +434,7 @@ void Grenade::update()
     if (isReleased)
     {
         Time--;
-        if (Logic::canGetThrough(destRect->x,destRect->y) == false)
+        if (Logic::canGetThrough(destRect->x,destRect->y) == false || canGo(destRect) == 0)
         {
             Time = 0;
         }
@@ -543,5 +559,36 @@ void Character::update() {
    grenade->update();
 }
 
-Bot::Bot() : Character() {}
+Bot::Bot() : Character() {
+    this->player->x = SCREEN_HEIGHT;
+    this->player->y = SCREEN_WIDTH;
+    this->player->destRect->x = SCREEN_HEIGHT;; // Vị trí x trên màn hình
+    this->player->destRect->y = SCREEN_WIDTH;;
+
+}
 Bot::~Bot() {}
+void Bot::update()
+{
+    this->player->dir = Logic::Rand(1,4);
+    switch (this->player->dir)
+    {
+    case Up:
+        this->player->dx = 0;
+        this->player->dy = -5;
+        break;
+    case Down:
+        this->player->dx = 0;
+        this->player->dy = 5;
+        break;
+    case Left:
+        this->player->dx = -5;
+        this->player->dy = 0;
+        break;
+    case Right:
+        this->player->dx = 5;
+        this->player->dy = 0;
+        break;
+    }
+    this->player->update();
+    this->sword->update();
+}

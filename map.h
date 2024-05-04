@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "Defs.h"
 #include <string>
+#include<SDL.h>
 using namespace std;
 class Map
 {

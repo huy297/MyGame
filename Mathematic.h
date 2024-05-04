@@ -2,6 +2,8 @@
 #define MATH_H
 #include "defs.h"
 #include <SDL.h>
+#include <bits/stdc++.h>
+mt19937 ran(time(0));
 class Math
 {
 public:
@@ -16,6 +18,10 @@ public:
         int u = min(a->x+a->w,b->x+b->w);
         int v = min(a->y+b->h,b->y+b->h);
         return x < u && y < v;
+    }
+    static Rand(int l, int r)
+    {
+        return l + ran()%(r-l+1);
     }
 };
 
