@@ -12,8 +12,8 @@ int First_X,First_Y;
 int OffSet_X, OffSet_Y;
 Map *mp;
 SDL_Renderer* Game::renderer = nullptr;
-vector<Bot*> Bot::bot;
-vector<Bullet*> Gun::bullet;
+list<Bot*> Bot::bot;
+list<Bullet*> Gun::bullet;
 Game::Game(){
     Game::init();
 }
@@ -62,7 +62,7 @@ void Game::init()
 void Game::updateEvents()
 {
     character->update();
-    for (auto u : Bot::bot) u->update();
+    Bot::updateAllBot(character->player->x,character->player->y);
     OffSet_X = character->player->x - First_X;
     OffSet_Y = character->player->y - First_Y;
 }

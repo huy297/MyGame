@@ -3,7 +3,7 @@
 
 //#include "Game.h"
 #include<SDL.h>
-#include<vector>
+#include<list>
 using namespace std;
 
 enum WeaponState
@@ -95,7 +95,7 @@ public:
     void update();
     void shot();
 public:
-    static std::vector<Bullet*> bullet;
+    static std::list<Bullet*> bullet;
 };
 class Sword : public Weapon
 {
@@ -139,7 +139,7 @@ public:
     int pressTime,releaseTime;
     int speed;
     Explosion *explosion;
-    static vector<Grenade*> onGoing;
+    static list<Grenade*> onGoing;
 };
 
 
@@ -162,8 +162,9 @@ class Bot : public Character
 public:
     Bot();
     ~Bot();
-    void update();
-    static vector<Bot*> bot;
+    void update(int dir);
+    static list<Bot*> bot;
+    static void updateAllBot(int x, int y);
 };
 
 #endif // STRUCTS_H

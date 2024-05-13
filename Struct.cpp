@@ -2,6 +2,7 @@
 #include "Graphics.h"
 #include "Logic.h"
 #include "Math.h"
+#include "Algo.h"
 #include<iostream>
 using namespace std;
 
@@ -172,7 +173,7 @@ void Gun::update() {
         MakeRect(destRect,owner->x+25,owner->y-5,16,32);
         break;
     }
-    vector<Bullet*> tmp;
+    list<Bullet*> tmp;
     for (auto currentBullet : bullet)
     {
        if (currentBullet->Time > 0)
@@ -499,7 +500,7 @@ void Grenade::mapSpeed()
     }
 }
 
-vector<Grenade*> Grenade::onGoing;
+list<Grenade*> Grenade::onGoing;
 
 void Grenade::release()
 {
@@ -542,7 +543,6 @@ void Explosion::update()
 }
 
 Character::Character() {
-    cerr << " ? ?? " << endl;
     this->player = new Entity();
     this->player->loadTexture("img/simple.png");
     this->sword = new Sword("img/sword.png", this->player);
@@ -562,14 +562,14 @@ void Character::update() {
 Bot::Bot() : Character() {
     this->player->x = SCREEN_HEIGHT;
     this->player->y = SCREEN_WIDTH;
-    this->player->destRect->x = SCREEN_HEIGHT;; // Vị trí x trên màn hình
-    this->player->destRect->y = SCREEN_WIDTH;;
+    this->player->destRect->x = SCREEN_HEIGHT; // Vị trí x trên màn hình
+    this->player->destRect->y = SCREEN_WIDTH;
 
 }
 Bot::~Bot() {}
-void Bot::update()
+void Bot::update(int dir)
 {
-    this->player->dir = Logic::Rand(1,4);
+    this->player->dir = dir;
     switch (this->player->dir)
     {
     case Up:
@@ -589,6 +589,28 @@ void Bot::update()
         this->player->dy = 0;
         break;
     }
+//    if (Logic::canMove(this->player->x+this->player->dx,this->player->y+this->player->dy,this->player->dir) == 0)
+//    {
+//            int dir = Logic::Rand(1,4);
+//            Bot::update(dir);
+//            return;
+//    }
     this->player->update();
     this->sword->update();
+}
+bool OkK = true;
+void Bot::updateAllBot(int x, int y)
+{
+    Point c = {x/10,y/10};
+    bfs(c);
+    for (auto u : bot)
+    {
+       // cout << u->player->x << ' ' << u->player->y << ' ' << Trace[int(u->player->x)/5][int(u->player->y)/5] << " current bot?? " << endl;
+            if (OkK) {
+
+                trace(c.x,c.y,int(u->player->x)/10,int(u->player->y)/10);
+                OkK = false;
+            }
+            u->update(Trace[int(u->player->x)/10][int(u->player->y)/10]);
+    }
 }

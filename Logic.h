@@ -23,7 +23,6 @@ public:
         int y = max(a->y,b->y);
         int u = min(a->x+a->w,b->x+b->w);
         int v = min(a->y+b->h,b->y+b->h);
-        cout << x << ' ' << y << ' ' << u << ' ' <<v << " ?\n";
         return x < u && y < v;
     }
     static int Rand(int l, int r)
@@ -54,6 +53,10 @@ public:
         int v = (x+deltaX)/SPRITE_X;
         int u = (y+deltaY)/SPRITE_Y;
      //   cout << x << ' ' << y << ' ' << u << ' ' << v << " why still moving\n";
+        if (x == 840 && y == 840)
+        {
+            cout << Map::isWalkable[u][v] << " why \n";
+        }
         return Map::isWalkable[u][v];
     }
     static bool canGetThrough(int x, int y)
