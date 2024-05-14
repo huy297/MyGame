@@ -17,6 +17,7 @@ public:
   ~Entity();
   void loadTexture(const char* filename);
   void update();
+  bool checkValidMove();
 public:
   float x,y;
   float dx,dy;
@@ -164,7 +165,7 @@ public:
     ~Bot();
     void update(int dir);
     static list<Bot*> bot;
-    static void updateAllBot(int x, int y);
+    static void updateAllBot(SDL_Rect *player);
 };
 
 #endif // STRUCTS_H

@@ -9,15 +9,8 @@ using namespace std;
 int DirectionY[] = {0,-1,1,0,0};
 int DirectionX[] = {0,0,0,-1,1};
 
-bool canGo(SDL_Rect *dest)
-{
-    for (auto u : Bot::bot)
-    {
-       // cout << u->player->destRect->x << ' ' << u->player->destRect->y << ' ' << player->destRect->x << ' ' << player->destRect->y << " dmm\n";
-        if (Logic::intersect(u->player->destRect,dest)) return false;
-    }
-    return true;
-}
+
+list<SDL_Rect*> MovingThings;
 
 void MakeRect (SDL_Rect *rect, int x, int y, int w, int h) {
     rect->x = x;
@@ -62,21 +55,33 @@ void Entity::loadTexture (const char* filename)
     texture = IMG_LoadTexture(Game::renderer,filename);
 }
 
-void Entity::update()
+bool Entity::checkValidMove()
 {
-    bool isMove = dir;
     if (Logic::canMove(destRect->x+dx,destRect->y+dy,this->dir) == 0)
     {
         dx = 0;
         dy = 0;
+        return false;
     }
     destRect->x += dx;
     destRect->y += dy;
-    if (canGo(destRect) == false)
+    if (Logic::canGo(destRect,MovingThings) == false)
     {
-        destRect->x -= dx;
-        destRect->y -= dy;
+        return false;
     }
+    destRect->x -=dx;
+    destRect->y -= dy;
+    return true;
+}
+void Entity::update()
+{
+    bool isMove = dir;
+    if (Entity::checkValidMove() == true)
+    {
+        destRect->x += dx;
+        destRect->y += dy;
+    }
+
     dx = 0; dy = 0;
     if (dir == Up)
     {
@@ -212,7 +217,7 @@ void Bullet::setUp(int x, int y)
     {
     case Up:
         MakeRect(srcRect,16,48,16,16);
-        MakeRect(destRect,x+GUN_X/2-12,y+GUN_Y/2-10,16,16);
+        MakeRect(destRect,x+GUN_X/2-12,y+GUN_Y/2-20,16,16);
         break;
     case Down:
         MakeRect(srcRect,0,0,16,16);
@@ -224,14 +229,14 @@ void Bullet::setUp(int x, int y)
         break;
     case Left:
         MakeRect(srcRect,48,64,16,16);
-        MakeRect(destRect,x+GUN_X/2-8,y+GUN_Y/2-10,16,16);
+        MakeRect(destRect,x-16,y+GUN_Y/2-10,16,16);
         break;
     }
 }
 
 void Bullet::update()
 {
-    if (Logic::canGetThrough(destRect->x,destRect->y) == false || canGo(destRect) == 0)
+    if (Logic::canGetThrough(destRect->x,destRect->y) == false || Logic::canGo(destRect,MovingThings) == 0)
     {
         Time = 0;
         return;
@@ -435,7 +440,7 @@ void Grenade::update()
     if (isReleased)
     {
         Time--;
-        if (Logic::canGetThrough(destRect->x,destRect->y) == false || canGo(destRect) == 0)
+        if (Logic::canGetThrough(destRect->x,destRect->y) == false || Logic::canGo(destRect,MovingThings) == 0)
         {
             Time = 0;
         }
@@ -562,32 +567,32 @@ void Character::update() {
 Bot::Bot() : Character() {
     this->player->x = SCREEN_HEIGHT;
     this->player->y = SCREEN_WIDTH;
-    this->player->destRect->x = SCREEN_HEIGHT; // Vị trí x trên màn hình
-    this->player->destRect->y = SCREEN_WIDTH;
+    this->player->destRect->x = SCREEN_HEIGHT+200; // Vị trí x trên màn hình
+    this->player->destRect->y = SCREEN_WIDTH+200;
 
 }
 Bot::~Bot() {}
 void Bot::update(int dir)
 {
     this->player->dir = dir;
-    switch (this->player->dir)
+    cout << dir << " ??\n";
+    if (dir & 1)
     {
-    case Up:
-        this->player->dx = 0;
-        this->player->dy = -5;
-        break;
-    case Down:
-        this->player->dx = 0;
-        this->player->dy = 5;
-        break;
-    case Left:
-        this->player->dx = -5;
-        this->player->dy = 0;
-        break;
-    case Right:
-        this->player->dx = 5;
-        this->player->dy = 0;
-        break;
+        this->player->dy += -10;
+    }
+    if (dir & 2)
+    {
+
+        this->player->dy += 10;
+    }
+    if (dir & 4)
+    {
+
+        this->player->dx += -10;
+    }
+    if (dir & 8)
+    {
+        this->player->dx += 10;
     }
 //    if (Logic::canMove(this->player->x+this->player->dx,this->player->y+this->player->dy,this->player->dir) == 0)
 //    {
@@ -599,10 +604,14 @@ void Bot::update(int dir)
     this->sword->update();
 }
 bool OkK = true;
-void Bot::updateAllBot(int x, int y)
+void Bot::updateAllBot(SDL_Rect *player)
 {
-    Point c = {x/10,y/10};
+    //cout << x << ' ' << y << " Player\n";
+    Point c = {(player->x)/10,(player->y)/10};
     bfs(c);
+    MovingThings.clear();
+    MovingThings.push_back(player);
+    for (auto u : bot) MovingThings.push_back(u->player->destRect);
     for (auto u : bot)
     {
        // cout << u->player->x << ' ' << u->player->y << ' ' << Trace[int(u->player->x)/5][int(u->player->y)/5] << " current bot?? " << endl;

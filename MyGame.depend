@@ -75,3 +75,74 @@
 	"logic.h"
 	<queue>
 
+1715672115 source:c:\users\pcm\documents\mygame\game.cpp
+	"Game.h"
+	"Defs.h"
+	"map.h"
+	"Graphics.h"
+	<iostream>
+
+1715630588 c:\users\pcm\documents\mygame\game.h
+	"defs.h"
+	"Structs.h"
+	<vector>
+	<SDL.h>
+	<SDL_Image.h>
+
+1715631454 c:\users\pcm\documents\mygame\defs.h
+
+1715672100 c:\users\pcm\documents\mygame\structs.h
+	<SDL.h>
+	<list>
+
+1715630588 c:\users\pcm\documents\mygame\map.h
+	"Game.h"
+	"Defs.h"
+	<string>
+	<SDL.h>
+
+1715630588 c:\users\pcm\documents\mygame\graphics.h
+	"Game.h"
+	"structs.h"
+	"map.h"
+
+1715630588 source:c:\users\pcm\documents\mygame\graphics.cpp
+	"Graphics.h"
+	<bits/stdc++.h>
+
+1715630588 source:c:\users\pcm\documents\mygame\main.cpp
+	<SDL.h>
+	"Game.h"
+	"Defs.h"
+	"Graphics.h"
+	"Structs.h"
+
+1715630588 source:c:\users\pcm\documents\mygame\map.cpp
+	"map.h"
+	"Graphics.h"
+	"Game.h"
+	"iostream"
+	<string.h>
+
+1715672060 source:c:\users\pcm\documents\mygame\struct.cpp
+	"Structs.h"
+	"Graphics.h"
+	"Logic.h"
+	"Math.h"
+	"Algo.h"
+	<iostream>
+
+1715672017 c:\users\pcm\documents\mygame\logic.h
+	"map.h"
+	"defs.h"
+	"iostream"
+	"math.h"
+	<bits/stdc++.h>
+	<SDL.h>
+
+1715672025 c:\users\pcm\documents\mygame\algo.h
+	"defs.h"
+	"map.h"
+	"logic.h"
+	<queue>
+

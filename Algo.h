@@ -10,10 +10,12 @@ struct Point
     int x,y;
 };
 const int N = 350;
-int mx[] = {0,1,-1,0};
-int my[] = {1,0,0,-1};
-int Dir[] = {Up,Left,Right,Down}; //remember this is going opposite
-int RightDir[] = {Down,Right,Left,Up};
+int mx[] = {0,1,-1,0,1,1,-1,-1};
+int my[] = {1,0,0,-1,1,-1,1,-1};
+int Dir[] = {Up,Left,Right,Down,Left,Left,Left,Right,Right}; //remember this is going opposite
+int RightDir[] = {Down,Right,Left,Up,Right,Right,Left,Left};
+int TraceDir[] = {Up,Left,Right,Down,Left,LeftAndUp,LeftAndDown,RightAndUp,RightAndDown}; //remember this is going opposite
+int TraceRightDir[] = {Down,Right,Left,Up,RightAndDown,RightAndUp,LeftAndDown,LeftAndUp};
 int Trace[N][N];
 int RightTrace[N][N];
 Point m[N][N];
@@ -58,8 +60,8 @@ void bfs (Point st)
             int a = x*10/48;
             int b = y*10/48;
             if (Trace[x][y] != -1) continue;
-            Trace[x][y] = Dir[i];
-            RightTrace[x][y] = RightDir[i];
+            Trace[x][y] = TraceDir[i];
+            RightTrace[x][y] = TraceRightDir[i];
             m[x][y] = {u.x,u.y};
             q.push({x,y});
         }

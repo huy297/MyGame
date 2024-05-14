@@ -6,6 +6,7 @@
 #include "iostream"
 #include "math.h"
 #include <bits/stdc++.h>
+#include <SDL.h>
 mt19937 ran(time(0));
 using namespace std;
 
@@ -53,10 +54,10 @@ public:
         int v = (x+deltaX)/SPRITE_X;
         int u = (y+deltaY)/SPRITE_Y;
      //   cout << x << ' ' << y << ' ' << u << ' ' << v << " why still moving\n";
-        if (x == 840 && y == 840)
-        {
-            cout << Map::isWalkable[u][v] << " why \n";
-        }
+//        if (x == 840 && y == 840)
+//        {
+//            cout << Map::isWalkable[u][v] << " why \n";
+//        }
         return Map::isWalkable[u][v];
     }
     static bool canGetThrough(int x, int y)
@@ -66,6 +67,18 @@ public:
      //   cout << x << ' ' << y << ' ' << u << ' ' << v << ' ' << Map::isBlocked[u][v] << " ???\n";
         return Map::isBlocked[u][v] == 0;
     }
+    static bool canGo(SDL_Rect *dest, list<SDL_Rect*> &MovingThings)
+    {
+        for (auto u : MovingThings)
+        {
+           // cout << u->player->destRect->x << ' ' << u->player->destRect->y << ' ' << player->destRect->x << ' ' << player->destRect->y << " dmm\n";
+            if ((u->x == dest->x) && (u->y == dest->y) && (u->w == dest->w) && (u->h == dest->h)) return true;
+            if (Logic::intersect(u,dest)) return false;
+        }
+        return true;
+    }
+
+
 };
 
 

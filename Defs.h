@@ -12,8 +12,12 @@
 // for movement
 #define Up 1
 #define Down 2
-#define Left 3
-#define Right 4
+#define Left 4
+#define Right 8
+#define RightAndUp 9
+#define RightAndDown 10
+#define LeftAndUp 5
+#define LeftAndDown 6
 
 //
 #define MAPSIZE 80
