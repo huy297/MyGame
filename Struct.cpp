@@ -10,7 +10,30 @@ int DirectionY[] = {0,-1,1,0,0};
 int DirectionX[] = {0,0,0,-1,1};
 
 
-list<SDL_Rect*> MovingThings;
+list<Entity*> MovingThings;
+bool canGo(SDL_Rect *dest){
+        for (auto x : MovingThings)
+        {
+            SDL_Rect *u = x->destRect;
+           // cout << u->player->destRect->x << ' ' << u->player->destRect->y << ' ' << player->destRect->x << ' ' << player->destRect->y << " dmm\n";
+            if ((u->x == dest->x) && (u->y == dest->y) && (u->w == dest->w) && (u->h == dest->h)) continue;
+            if (Logic::intersect(u,dest)) return false;
+        }
+        return true;
+}
+
+bool bulletCanGo(SDL_Rect *dest){
+        for (auto x : MovingThings)
+        {
+            SDL_Rect *u = x->destRect;
+            if (Logic::intersect(u,dest))
+            {
+                x->hp -= 5;
+                return false;
+            }
+        }
+        return true;
+}
 
 void MakeRect (SDL_Rect *rect, int x, int y, int w, int h) {
     rect->x = x;
@@ -26,6 +49,7 @@ Entity::Entity(){
     speedy = 10;
     x = SCREEN_HEIGHT/2;
     y = SCREEN_WIDTH/2;
+    hp = 100;
    // x = 0; y = 0;
 
     srcRect = new SDL_Rect();
@@ -65,8 +89,10 @@ bool Entity::checkValidMove()
     }
     destRect->x += dx;
     destRect->y += dy;
-    if (Logic::canGo(destRect,MovingThings) == false)
+    if (canGo(destRect) == false)
     {
+        destRect->x -=dx;
+        destRect->y -= dy;
         return false;
     }
     destRect->x -=dx;
@@ -119,6 +145,7 @@ Weapon::Weapon(const char* filename, Entity *owner)
     Weapon::setOwner(owner);
     srcRect = new SDL_Rect();
     destRect = new SDL_Rect();
+    lastActived = 0;
 }
 Weapon::~Weapon()
 {
@@ -137,6 +164,7 @@ WeaponEffect::WeaponEffect(const char* filename, Weapon *owner)
     srcRect = new SDL_Rect();
     destRect = new SDL_Rect();
     this->owner = owner;
+    Time = 0;
 }
 WeaponEffect::~WeaponEffect()
 {
@@ -236,7 +264,7 @@ void Bullet::setUp(int x, int y)
 
 void Bullet::update()
 {
-    if (Logic::canGetThrough(destRect->x,destRect->y) == false || Logic::canGo(destRect,MovingThings) == 0)
+    if (Logic::canGetThrough(destRect->x,destRect->y) == false || bulletCanGo(destRect) == 0)
     {
         Time = 0;
         return;
@@ -310,6 +338,12 @@ void Sword::update()
 
 void Sword::cut()
 {
+    long long Now = Logic::currentTime();
+    if (Now - lastActived <= 500)
+    {
+        return;
+    }
+    lastActived = Now;
     isSlashed = true;
     toSlash->setUp(destRect->x,destRect->y);
 }
@@ -440,7 +474,7 @@ void Grenade::update()
     if (isReleased)
     {
         Time--;
-        if (Logic::canGetThrough(destRect->x,destRect->y) == false || Logic::canGo(destRect,MovingThings) == 0)
+        if (Logic::canGetThrough(destRect->x,destRect->y) == false || canGo(destRect) == 0)
         {
             Time = 0;
         }
@@ -569,13 +603,38 @@ Bot::Bot() : Character() {
     this->player->y = SCREEN_WIDTH;
     this->player->destRect->x = SCREEN_HEIGHT+200; // Vị trí x trên màn hình
     this->player->destRect->y = SCREEN_WIDTH+200;
-
 }
 Bot::~Bot() {}
-void Bot::update(int dir)
+void Bot::updateInput(int dir, Character *MainCharacter)
 {
+    cout << this->player->hp << " update hp\n";
+    int newDir = Logic::canSlash(this->player->destRect,MainCharacter->player->destRect);
+    if (newDir)
+    {
+        this->player->dir = newDir;
+        if (this->weaponState != SWORD)
+        {
+            this->currentWeapon = this->sword;
+            this->weaponState = SWORD;
+        }
+        this->sword->cut();
+        this->update();
+        return;
+    }
+    newDir = Logic::canShoot(this->player->destRect,MainCharacter->player->destRect);
+    if (newDir)
+    {
+            this->player->dir = newDir;
+            if (this->weaponState != GUN)
+            {
+                  this->currentWeapon = this->gun;
+                  this->weaponState = GUN;
+            }
+            this->gun->shot();
+            this->update();
+            return;
+    }
     this->player->dir = dir;
-    cout << dir << " ??\n";
     if (dir & 1)
     {
         this->player->dy += -10;
@@ -600,18 +659,18 @@ void Bot::update(int dir)
 //            Bot::update(dir);
 //            return;
 //    }
-    this->player->update();
-    this->sword->update();
+    this->update();
 }
 bool OkK = true;
-void Bot::updateAllBot(SDL_Rect *player)
+void Bot::updateAllBot(Character *MainCharacter)
 {
+    SDL_Rect *player = MainCharacter->player->destRect;
     //cout << x << ' ' << y << " Player\n";
     Point c = {(player->x)/10,(player->y)/10};
     bfs(c);
     MovingThings.clear();
-    MovingThings.push_back(player);
-    for (auto u : bot) MovingThings.push_back(u->player->destRect);
+    MovingThings.push_back(MainCharacter->player);
+    for (auto u : bot) MovingThings.push_back(u->player);
     for (auto u : bot)
     {
        // cout << u->player->x << ' ' << u->player->y << ' ' << Trace[int(u->player->x)/5][int(u->player->y)/5] << " current bot?? " << endl;
@@ -620,6 +679,6 @@ void Bot::updateAllBot(SDL_Rect *player)
                 trace(c.x,c.y,int(u->player->x)/10,int(u->player->y)/10);
                 OkK = false;
             }
-            u->update(Trace[int(u->player->x)/10][int(u->player->y)/10]);
+            u->updateInput(Trace[int(u->player->x)/10][int(u->player->y)/10],MainCharacter);
     }
 }

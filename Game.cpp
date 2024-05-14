@@ -62,7 +62,7 @@ void Game::init()
 void Game::updateEvents()
 {
     character->update();
-    Bot::updateAllBot(character->player->destRect);
+    Bot::updateAllBot(character);
     OffSet_X = character->player->x - First_X;
     OffSet_Y = character->player->y - First_Y;
 }

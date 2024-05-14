@@ -13,9 +13,9 @@ using namespace std;
 class Logic
 {
 public:
-    static pair<int,int> coordToBlock(int x, int y)
+    static long long currentTime()
     {
-
+        return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     }
     static bool intersect(SDL_Rect *a, SDL_Rect *b)
     {
@@ -67,18 +67,56 @@ public:
      //   cout << x << ' ' << y << ' ' << u << ' ' << v << ' ' << Map::isBlocked[u][v] << " ???\n";
         return Map::isBlocked[u][v] == 0;
     }
-    static bool canGo(SDL_Rect *dest, list<SDL_Rect*> &MovingThings)
+    static int canShoot (SDL_Rect *a, SDL_Rect *b)
     {
-        for (auto u : MovingThings)
+        if (abs(a->x-b->x)+abs(a->y-b->y) <= 100) return 0;
+        int x = (a->x+47) / 48;
+        int y = a->y / 48;
+        int u = (b->x+47) / 48;
+        int v = b->y / 48;
+        if (abs(a->x-b->x) <= 20)
         {
-           // cout << u->player->destRect->x << ' ' << u->player->destRect->y << ' ' << player->destRect->x << ' ' << player->destRect->y << " dmm\n";
-            if ((u->x == dest->x) && (u->y == dest->y) && (u->w == dest->w) && (u->h == dest->h)) return true;
-            if (Logic::intersect(u,dest)) return false;
+            if (a->y >= b->y)
+            {
+                if (Map::blockedSize(u,v,x,y)) return 0;
+                return Up;
+            }
+            else
+            {
+                if (Map::blockedSize(x,y,u,v)) return 0;
+                return Down;
+            }
         }
-        return true;
+        if (abs(a->y-b->y) <= 20)
+        {
+            if (a->x <= b->x)
+            {
+                cout << x << ' ' << y << ' ' << u << ' ' << v <<  ' ' << Map::blockedSize(x,y,u,v) << " ??\n";
+                if (Map::blockedSize(x,y,u,v)) return 0;
+                return Right;
+            }
+            else
+            {
+                if (Map::blockedSize(u,v,x,y)) return 0;
+                return Left;
+            }
+        }
+        return 0;
     }
-
-
+    static int canSlash (SDL_Rect *a, SDL_Rect *b)
+    {
+        if (abs(a->x-b->x) <= 20)
+        {
+            if (a->y >= b->y && a->y-b->y<=60) return Up;
+            else if (a->y <= b->y && a->y-b->y>=-60) return Down;
+        }
+        if (abs(a->y-b->y) <= 20)
+        {
+            if (a->x >= b->x && a->x-b->x<=60) return Left;
+            else if (a->x <= b->x && a->x-b->x>=-60) return Right;
+        }
+        return 0;
+    }
 };
 
 

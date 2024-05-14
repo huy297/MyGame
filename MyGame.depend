@@ -13,9 +13,9 @@
 	<SDL.h>
 	<SDL_Image.h>
 
-1715447681 c:\mygame\defs.h
+1715674294 c:\mygame\defs.h
 
-1715449047 source:c:\mygame\game.cpp
+1715676159 source:c:\mygame\game.cpp
 	"Game.h"
 	"Defs.h"
 	"map.h"
@@ -31,11 +31,11 @@
 	"Graphics.h"
 	<bits/stdc++.h>
 
-1715449113 c:\mygame\structs.h
+1715684729 c:\mygame\structs.h
 	<SDL.h>
 	<list>
 
-1715454408 source:c:\mygame\struct.cpp
+1715685124 source:c:\mygame\struct.cpp
 	"Structs.h"
 	"Graphics.h"
 	"Logic.h"
@@ -43,13 +43,13 @@
 	"Algo.h"
 	<iostream>
 
-1715341870 c:\mygame\map.h
+1715682745 c:\mygame\map.h
 	"Game.h"
 	"Defs.h"
 	<string>
 	<SDL.h>
 
-1715341870 source:c:\mygame\map.cpp
+1715683817 source:c:\mygame\map.cpp
 	"map.h"
 	"Graphics.h"
 	"Game.h"
@@ -58,18 +58,19 @@
 
 1712858346 c:\mygame\weapon.h
 
-1715454241 c:\mygame\logic.h
+1715684722 c:\mygame\logic.h
 	"map.h"
 	"defs.h"
 	"iostream"
 	"math.h"
 	<bits/stdc++.h>
+	<SDL.h>
 
 1713788374 c:\mygame\math.h
 	"defs.h"
 	<SDL.h>
 
-1715454479 c:\mygame\algo.h
+1715674294 c:\mygame\algo.h
 	"defs.h"
 	"map.h"
 	"logic.h"

@@ -28,6 +28,7 @@ public:
   SDL_Rect *destRect;
   bool Space;
   int currentDir;
+  int hp;
 };
 
 
@@ -43,6 +44,7 @@ public:
     SDL_Texture *texture;
     SDL_Rect *srcRect;
     SDL_Rect *destRect;
+    long long lastActived;
     int dir;
 };
 
@@ -163,9 +165,9 @@ class Bot : public Character
 public:
     Bot();
     ~Bot();
-    void update(int dir);
+    void updateInput(int dir,Character *MainCharacter);
     static list<Bot*> bot;
-    static void updateAllBot(SDL_Rect *player);
+    static void updateAllBot(Character *MainCharacter);
 };
 
 #endif // STRUCTS_H

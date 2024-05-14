@@ -6,6 +6,7 @@
 using namespace std;
 bool Map::isBlocked[MAPSIZE][MAPSIZE] = {};
 bool Map::isWalkable[MAPSIZE][MAPSIZE] = {};
+int Map::numBlocked[MAPSIZE][MAPSIZE] = {};
 void Map::ProcessData(int i, string s, int layer) {
 	int cur = 0;
 	int j = 0;
@@ -28,10 +29,10 @@ void Map::ProcessData(int i, string s, int layer) {
                 Map::isWalkable[i][j] = true;
                 break;
             case 3: // unwalkable 2
-                if (i == 9 && j == 13) cout << " wtf" << endl;
                 Map::isWalkable[i][j] = false;
                 Map::isBlocked[i][j] = true;
 		    }
+		    Map::numBlocked[i][j] = Map::isBlocked[i][j];
 		    j++;
 			cur = 0;
 		}
@@ -60,6 +61,7 @@ Map::~Map(){}
 void Map::LoadMap()
 {
     //freopen("MyMap/outmap.txt", "w", stdout);
+    memset(Map::numBlocked,0,sizeof(Map::numBlocked));
     for (int a=0; a<=3; a++)
     {
         string filename = "MyMap/mymap0.txt";
@@ -79,6 +81,13 @@ void Map::LoadMap()
         for (int j=0; j<80; j++)
         {
             if (i < 9 || j < 9) isWalkable[i][j] = false;
+        }
+    }
+    for (int i=1; i<80; i++) {
+        for (int j=1; j<80; j++)
+        {
+            Map::numBlocked[i][j] += Map::numBlocked[i-1][j] + Map::numBlocked[i][j-1] - Map::numBlocked[i-1][j-1];
+          //  if (Map::numBlocked[i][j]) cout << i << ' ' << j << ' ' << Map::numBlocked[i][j] << " ?\n";
         }
     }
 }

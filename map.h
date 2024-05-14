@@ -20,6 +20,15 @@ public:
 public:
     static bool isWalkable[MAPSIZE][MAPSIZE];
     static bool isBlocked[MAPSIZE][MAPSIZE];
+    static int numBlocked[MAPSIZE][MAPSIZE];
+    static int blockedSize (int x, int y, int u, int v)
+    {
+        int res = numBlocked[u][v];
+        if (y) res -= numBlocked[u][y-1];
+        if (x) res -= numBlocked[x-1][v];
+        if (x && y) res += numBlocked[x-1][y-1];
+        return res;
+    }
 };
 
 #endif // MAP_H
