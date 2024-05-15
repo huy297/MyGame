@@ -141,17 +141,18 @@ void Game::init()
 
 void Game::reset()
 {
-    First_X = character->player->x;
-    First_Y = character->player->y;
+    character = new Character();
 
-    setRect(character->player->srcRect,0,0,SCREEN_HEIGHT/2,SCREEN_WIDTH/2);
-    // for only main player
     character->player->hp = 400;
     character->player->maxHp = 400;
     character->player->magazine = 80;
     character->player->maxMagazine = 80;
     character->player->numGren = 3;
     totalScore = 0;
+
+    First_X = character->player->x;
+    First_Y = character->player->y;
+    // for only main player
 
     Bot::bot.clear();
     Gun::bullet.clear();
