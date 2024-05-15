@@ -51,8 +51,8 @@ Entity::Entity(){
     dy = 0;
     speedx = 10;
     speedy = 10;
-    x = SCREEN_HEIGHT/2;
-    y = SCREEN_WIDTH/2;
+    x = SCREEN_HEIGHT/2+50;
+    y = SCREEN_WIDTH/2+50;
     hp = 100;
     magazine = 40;
     numGren = 2;

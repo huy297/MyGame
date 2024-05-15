@@ -292,7 +292,7 @@ void Game::render()
     Graphics::updateOffSet(OffSet_X,OffSet_Y);
     Graphics::drawMap(mp);
     // for draw Text
-    Graphics::drawText(scoreTexture,720,0,50,50);
+    Graphics::drawText(scoreTexture,620,0,50,50);
     Graphics::drawText(hpTexture,0,0,50,50);
     Graphics::drawText(magTexture,0,50,50,50);
     Graphics::drawText(greTexture,0,100,50,50);
@@ -327,13 +327,13 @@ bool Game::changeState (GameState &currentState)
 {
     if (currentState == Menu)
     {
-        if (inRect(mouseX,mouseY,300,400,912,55))
+        if (inRect(mouseX,mouseY,250,400,912,55))
         {
             currentState = isPlaying;
             mouseX = mouseY = 0;
             return true;
         }
-        else if (inRect(mouseX,mouseY,300,600,912,55))
+        else if (inRect(mouseX,mouseY,250,600,912,55))
         {
             exit(0);
         }
@@ -348,13 +348,13 @@ bool Game::changeState (GameState &currentState)
     }
     else if (currentState == endGame)
     {
-        if (inRect(mouseX,mouseY,300,500,912,55))
+        if (inRect(mouseX,mouseY,250,500,912,55))
         {
             currentState = isPlaying;
             mouseX = mouseY = 0;
             return true;
         }
-        else if (inRect(mouseX,mouseY,300,650,912,55))
+        else if (inRect(mouseX,mouseY,250,650,912,55))
         {
             exit(0);
         }
@@ -366,9 +366,9 @@ void Game::renderMenu()
     SDL_SetRenderDrawColor(renderer,0,255,0,255);
     SDL_RenderClear(renderer);
     Graphics::backGround(allMap,srcMap,destMap);
-    Graphics::drawText(nameOfGame,140,200,200,200);
-    Graphics::drawText(playButton,300,400,60,100);
-    Graphics::drawText(exitButton,300,600,60,100);
+    Graphics::drawText(nameOfGame,100,200,200,200);
+    Graphics::drawText(playButton,250,400,60,100);
+    Graphics::drawText(exitButton,250,600,60,100);
     SDL_RenderPresent(renderer);
 }
 
@@ -377,9 +377,9 @@ void Game::renderEndGame()
     SDL_SetRenderDrawColor(renderer,0,255,0,255);
     SDL_RenderClear(renderer);
     Graphics::drawMap(mp);
-    Graphics::drawText(youlose,140,0,200,200);
-    Graphics::drawText(replayButton,300,500,60,100);
-    Graphics::drawText(exitButton,300,650,60,100);
+    Graphics::drawText(youlose,90,0,200,200);
+    Graphics::drawText(replayButton,250,500,60,100);
+    Graphics::drawText(exitButton,250,650,60,100);
     SDL_RenderPresent(renderer);
 }
 
