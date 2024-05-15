@@ -59,6 +59,12 @@ void Game::init()
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         LogErrorAndExit("SDL_INIT", SDL_GetError());
     }
+    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+        printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+    }
+     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+            LogErrorAndExit("SDL_mixer could not initialize!", Mix_GetError());
+        }
 
     // Initialize SDL_mixe
     // Initialize SDL_ttf

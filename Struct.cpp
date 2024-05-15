@@ -197,9 +197,10 @@ void Gun::shot()
     {
         return;
     }
-  //  Mix_Chunk *gJump = Graphics::loadSound("sound/shot.wav");
-  //  Graphics::play(gJump);
-  //  Mix_FreeChunk(gJump);
+    cout << "bonk\n";
+    Mix_Chunk *gJump = Graphics::loadSound("sound/fire.mp3");
+    Graphics::play(gJump);
+    if (gJump != nullptr) Mix_FreeChunk(gJump);
     owner->magazine--;
     Bullet *newBullet = new Bullet("img/bullet.png",destRect->x,destRect->y,owner->currentDir,owner);
     bullet.push_back(newBullet);
