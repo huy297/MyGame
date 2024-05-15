@@ -4,7 +4,7 @@
 #include "iostream"
 #include<string.h>
 using namespace std;
-bool Map::isBlocked[MAPSIZE][MAPSIZE] = {};
+int Map::isBlocked[MAPSIZE][MAPSIZE] = {};
 bool Map::isWalkable[MAPSIZE][MAPSIZE] = {};
 int Map::numBlocked[MAPSIZE][MAPSIZE] = {};
 void Map::ProcessData(int i, string s, int layer) {

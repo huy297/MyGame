@@ -4,6 +4,7 @@
 #include "Math.h"
 #include "Algo.h"
 #include<iostream>
+#include<SDL_mixer.h>
 using namespace std;
 
 int DirectionY[] = {0,-1,1,0,0};
@@ -11,36 +12,39 @@ int DirectionX[] = {0,0,0,-1,1};
 
 
 list<Entity*> MovingThings;
+
+
 bool canGo(SDL_Rect *dest){
         for (auto x : MovingThings)
         {
             SDL_Rect *u = x->destRect;
            // cout << u->player->destRect->x << ' ' << u->player->destRect->y << ' ' << player->destRect->x << ' ' << player->destRect->y << " dmm\n";
             if ((u->x == dest->x) && (u->y == dest->y) && (u->w == dest->w) && (u->h == dest->h)) continue;
-            if (Logic::intersect(u,dest)) return false;
+            if (Logic::intersect(u,dest) > 50) return false;
         }
         return true;
 }
 
-bool bulletCanGo(SDL_Rect *dest){
+bool bulletCanGo(Bullet *bullet){
         for (auto x : MovingThings)
         {
+            if (x == bullet->owner) continue;
             SDL_Rect *u = x->destRect;
-            if (Logic::intersect(u,dest))
+            if (Logic::intersect(u,bullet->destRect))
             {
-                x->hp -= 5;
+                x->hp -= 15;
                 return false;
             }
         }
         return true;
 }
-
 void MakeRect (SDL_Rect *rect, int x, int y, int w, int h) {
     rect->x = x;
     rect->y = y;
     rect->w = w;
     rect->h = h;
 }
+
 
 Entity::Entity(){
     dx = 0;
@@ -50,6 +54,12 @@ Entity::Entity(){
     x = SCREEN_HEIGHT/2;
     y = SCREEN_WIDTH/2;
     hp = 100;
+    magazine = 40;
+    numGren = 2;
+
+    maxHp = 200;
+    maxMagazine = 80;
+    maxGren = 3;
    // x = 0; y = 0;
 
     srcRect = new SDL_Rect();
@@ -102,6 +112,7 @@ bool Entity::checkValidMove()
 void Entity::update()
 {
     bool isMove = dir;
+    Map::isBlocked[int(x)/48][int(y)/48]--;
     if (Entity::checkValidMove() == true)
     {
         destRect->x += dx;
@@ -136,6 +147,7 @@ void Entity::update()
     }
     x = destRect->x;
     y = destRect->y;
+    Map::isBlocked[int(x)/48][int(y)/48]++;
     //srcRect->x %= 128*16;
 }
 
@@ -181,7 +193,15 @@ Gun::~Gun() {}
 
 void Gun::shot()
 {
-    Bullet *newBullet = new Bullet("img/bullet.png",destRect->x,destRect->y,owner->currentDir);
+    if (owner->magazine <= 0)
+    {
+        return;
+    }
+  //  Mix_Chunk *gJump = Graphics::loadSound("sound/shot.wav");
+  //  Graphics::play(gJump);
+  //  Mix_FreeChunk(gJump);
+    owner->magazine--;
+    Bullet *newBullet = new Bullet("img/bullet.png",destRect->x,destRect->y,owner->currentDir,owner);
     bullet.push_back(newBullet);
     //cerr << owner->x << ' ' << owner->y << ' ' << newBullet->destRect->x << ' ' << newBullet->destRect->y << "owner bullet" << endl;
 }
@@ -206,19 +226,28 @@ void Gun::update() {
         MakeRect(destRect,owner->x+25,owner->y-5,16,32);
         break;
     }
-    list<Bullet*> tmp;
-    for (auto currentBullet : bullet)
-    {
-       if (currentBullet->Time > 0)
-       {
-           tmp.push_back(currentBullet);
-           currentBullet->update();
-       }
-    }
-    swap(bullet,tmp);
 }
 
-Bullet::Bullet(const char* filename, int x, int y, int dir)
+void Gun::updateAllBullet()
+{
+    auto x = bullet.begin();
+    while (x != bullet.end())
+    {
+        auto u = *x;
+        auto tmp = x++;
+        if (u->Time <= 0)
+        {
+            delete(u);
+            bullet.erase(tmp);
+        }
+        else
+        {
+            u->update();
+        }
+    }
+}
+
+Bullet::Bullet(const char* filename, int x, int y, int dir, Entity *owner)
 {
     this->dir = dir;
     this->Time = 15;
@@ -226,6 +255,7 @@ Bullet::Bullet(const char* filename, int x, int y, int dir)
     Bullet::loadTexture(filename);
     srcRect = new SDL_Rect();
     destRect = new SDL_Rect();
+    this->owner = owner;
     setUp(x,y);
 }
 Bullet::~Bullet()
@@ -264,7 +294,7 @@ void Bullet::setUp(int x, int y)
 
 void Bullet::update()
 {
-    if (Logic::canGetThrough(destRect->x,destRect->y) == false || bulletCanGo(destRect) == 0)
+    if (Logic::canGetThrough(destRect->x,destRect->y) == false || bulletCanGo(this) == 0)
     {
         Time = 0;
         return;
@@ -346,6 +376,14 @@ void Sword::cut()
     lastActived = Now;
     isSlashed = true;
     toSlash->setUp(destRect->x,destRect->y);
+    for (auto u : MovingThings)
+    {
+        if (u == this->owner) continue;
+        if (Logic::intersect(toSlash->destRect,u->destRect) > 10)
+        {
+            u->hp -= 30;
+        }
+    }
 }
 
 SwordSlash::SwordSlash(const char *filename, Weapon *owner) : WeaponEffect(filename,owner)
@@ -457,7 +495,18 @@ void Grenade::backToPos ()
         break;
     }
 }
-
+bool grenadeCanGo(Grenade *gre)
+{
+    for (auto u : MovingThings)
+    {
+        if (abs(u->x - gre->owner->x) <= 10 && abs(u->y - gre->owner->y) <= 10) continue;
+        if (Logic::intersect(gre->destRect,u->destRect) > 10)
+        {
+            return false;
+        }
+    }
+    return true;
+}
 void Grenade::update()
 {
     if (isExplosed)
@@ -465,7 +514,7 @@ void Grenade::update()
         if (explosion->Time == 0)
         {
             isExplosed = false;
-            Grenade::setUp();
+             Grenade::setUp();
             Grenade::backToPos();
         }
         else explosion->update();
@@ -474,7 +523,7 @@ void Grenade::update()
     if (isReleased)
     {
         Time--;
-        if (Logic::canGetThrough(destRect->x,destRect->y) == false || canGo(destRect) == 0)
+        if (Logic::canGetThrough(destRect->x,destRect->y) == false || grenadeCanGo(this) == 0)
         {
             Time = 0;
         }
@@ -512,7 +561,10 @@ void Grenade::update()
 
 void Grenade::active()
 {
-    if (isActived) return;
+    if (isActived)
+    {
+        return;
+    }
     isActived = true;
     pressTime =SDL_GetTicks();
 }
@@ -521,7 +573,6 @@ void Grenade::mapSpeed()
 {
     int delta = releaseTime - pressTime;
     delta = min(delta,600);
-    cerr << "press time" << delta << endl;
     speed = delta / 20 + 3;
     delta /= 150;
     switch (delta)
@@ -539,14 +590,12 @@ void Grenade::mapSpeed()
     }
 }
 
-list<Grenade*> Grenade::onGoing;
 
 void Grenade::release()
 {
     if (isReleased) return;
     releaseTime = SDL_GetTicks();
     Grenade::mapSpeed();
-    onGoing.push_back(this);
     isActived = false;
     isReleased = true;
     MakeRect(srcRect,0,2*BLOCK,BLOCK,BLOCK);
@@ -558,9 +607,36 @@ void Grenade::explose()
 
 }
 
+void damageExplosion(SDL_Rect *rect)
+{
+    for (auto u : Bot::bot)
+    {
+        int dam = 0;
+
+        if (u->player->currentDir == Up)
+        {
+            rect->x += 64;
+            rect->y += 80;
+        }
+
+        int dak = Logic::intersect(rect,u->player->destRect);
+        if (dak >= 700) dam = 100;
+        else if (dak >= 400) dam = 70;
+        else if (dak >= 200) dam = 50;
+        else if (dak >= 10) dam = 30;
+        u->player->hp -= dam;
+        if (u->player->currentDir == Up)
+        {
+            rect->x -= 64;
+            rect->y -= 80;
+        }
+    }
+}
+
 Explosion::Explosion(const char* filename, Weapon *owner) : WeaponEffect(filename,owner)
 {
     Explosion::setUp(owner->destRect->x-50,owner->destRect->y-50);
+    damageExplosion(destRect);
 }
 
 Explosion::~Explosion()
@@ -581,9 +657,150 @@ void Explosion::update()
     srcRect->y += 8*BLOCK;
 }
 
+Death::Death(const char *filename, int x, int y)
+{
+    texture = IMG_LoadTexture(Game::renderer,filename);
+    srcRect = new SDL_Rect();
+    destRect = new SDL_Rect();
+    MakeRect(srcRect,0,0,48,48);
+    MakeRect(destRect,x,y,48,48);
+    Time = 4;
+}
+
+Death::~Death(){}
+
+void Death::update()
+{
+    Time--;
+    srcRect->x += 48;
+}
+
+void Death::updateAllDeath()
+{
+    auto x = dead.begin();
+    while (x != dead.end())
+    {
+        auto u = *x;
+        u->update();
+        auto tmp = x++;
+        auto dak = *tmp;
+        if (dak->Time <= 0)
+        {
+            delete(dak);
+            dead.erase(tmp);
+        }
+    }
+}
+
+Item::Item(const char* filename, int x, int y, ItemName nameItem)
+{
+    texture = IMG_LoadTexture(Game::renderer,filename);
+    srcRect = new SDL_Rect();
+    destRect = new SDL_Rect();
+    MakeRect(srcRect,0,0,32,32);
+    MakeRect(destRect,x,y,32,32);
+    Time = Logic::currentTime();
+    this->nameItem = nameItem;
+}
+
+Item::~Item()
+{
+
+}
+
+bool Item::update()
+{
+    if (Logic::currentTime() - Time >= 30000)
+    {
+        return false;
+    }
+    for (auto u : MovingThings)
+    {
+        if (Logic::intersect(this->destRect,u->destRect) > 10)
+        {
+            if (nameItem == Health)
+            {
+                u->hp += 100;
+                u->hp = min(u->hp,u->maxHp);
+            }
+            else if (nameItem == Magazine)
+            {
+                u->magazine += 40;
+                u->magazine = min (u->magazine,u->maxMagazine);
+            }
+            else
+            {
+                u->numGren ++;
+                u->numGren = min(u->numGren,u->maxGren);
+            }
+            return false;
+        }
+    }
+    return true;
+}
+void Item::updateAllItem()
+{
+    auto x = allItem.begin();
+    while (x != allItem.end())
+    {
+        auto u = *x;
+        auto tmp = x++;
+        if (u->update() == false)
+        {
+            delete(u);
+            allItem.erase(tmp);
+        }
+    }
+}
+long long lastGenItem = 0;
+void Item::genItem()
+{
+    long long Now = Logic::currentTime();
+    if (Now-lastGenItem >= 500)
+    {
+        int x = 0, y = 0;
+        while (Logic::canMove(x,y,Up) == 0)
+        {
+            x = Logic::Rand(400,3300);
+            y = Logic::Rand(400,3300);
+        }
+        int t = Logic::Rand(1,3);
+        ItemName nameItem = Health;
+        if (t == 2) nameItem = Magazine;
+        else if (t == 3) nameItem = Gren;
+        Item *newItem;
+        switch (nameItem)
+        {
+            case Health:
+                newItem = new Item("img/health.png",x,y,nameItem);
+                break;
+            case Magazine:
+                newItem = new Item("img/magazine.png", x, y,nameItem);
+                break;
+            case Gren:
+                newItem = new Item("img/Gren.png", x, y,nameItem);
+                break;
+
+        }
+        allItem.push_back(newItem);
+        lastGenItem = Now;
+    }
+}
+
 Character::Character() {
     this->player = new Entity();
     this->player->loadTexture("img/simple.png");
+    this->sword = new Sword("img/sword.png", this->player);
+    this->gun = new Gun("img/SuperGun.png", this->player);
+    this->grenade = new Grenade("img/grenade.png", this->player);
+    currentWeapon = sword;
+    weaponState = SWORD;
+}
+
+Character::Character(const char *filename)
+{
+    this->player = new Entity();
+    this->player->loadTexture(filename);
     this->sword = new Sword("img/sword.png", this->player);
     this->gun = new Gun("img/SuperGun.png", this->player);
     this->grenade = new Grenade("img/grenade.png", this->player);
@@ -604,10 +821,18 @@ Bot::Bot() : Character() {
     this->player->destRect->x = SCREEN_HEIGHT+200; // Vị trí x trên màn hình
     this->player->destRect->y = SCREEN_WIDTH+200;
 }
+
+Bot::Bot(int x, int y, const char *filename) : Character(filename) {
+    this->player->x = x;
+    this->player->y = y;
+    this->player->destRect->x = x; // Vị trí x trên màn hình
+    this->player->destRect->y = y;
+}
+
+
 Bot::~Bot() {}
 void Bot::updateInput(int dir, Character *MainCharacter)
 {
-    cout << this->player->hp << " update hp\n";
     int newDir = Logic::canSlash(this->player->destRect,MainCharacter->player->destRect);
     if (newDir)
     {
@@ -622,7 +847,7 @@ void Bot::updateInput(int dir, Character *MainCharacter)
         return;
     }
     newDir = Logic::canShoot(this->player->destRect,MainCharacter->player->destRect);
-    if (newDir)
+    if (newDir && MainCharacter->player->magazine > 0)
     {
             this->player->dir = newDir;
             if (this->weaponState != GUN)
@@ -653,32 +878,72 @@ void Bot::updateInput(int dir, Character *MainCharacter)
     {
         this->player->dx += 10;
     }
-//    if (Logic::canMove(this->player->x+this->player->dx,this->player->y+this->player->dy,this->player->dir) == 0)
-//    {
-//            int dir = Logic::Rand(1,4);
-//            Bot::update(dir);
-//            return;
-//    }
+    if (Logic::canMove(this->player->x+this->player->dx,this->player->y+this->player->dy,this->player->dir) == 0)
+    {
+            int dir = Logic::Rand(1,4);
+            Bot::updateInput(dir,MainCharacter);
+            return;
+    }
     this->update();
 }
 bool OkK = true;
+void addDead(SDL_Rect *rect)
+{
+    Death *u = new Death("img/Death.png", rect->x, rect->y);
+    Death::dead.push_back(u);
+}
 void Bot::updateAllBot(Character *MainCharacter)
 {
     SDL_Rect *player = MainCharacter->player->destRect;
     //cout << x << ' ' << y << " Player\n";
     Point c = {(player->x)/10,(player->y)/10};
-    bfs(c);
+    dijkstra(c);
     MovingThings.clear();
     MovingThings.push_back(MainCharacter->player);
     for (auto u : bot) MovingThings.push_back(u->player);
-    for (auto u : bot)
+    auto x = bot.begin();
+    while (x != bot.end())
     {
-       // cout << u->player->x << ' ' << u->player->y << ' ' << Trace[int(u->player->x)/5][int(u->player->y)/5] << " current bot?? " << endl;
-            if (OkK) {
+        auto u = *x;
+        u->updateInput(Trace[int(u->player->x)/10][int(u->player->y)/10],MainCharacter);
+        auto tmp = x++;
+        if ((*tmp)->player->hp <= 0)
+        {
+            addDead((*tmp)->player->destRect);
+            delete((*tmp)->player);
+            bot.erase(tmp);
+        }
+    }
+}
+long long lastGen = 0;
 
-                trace(c.x,c.y,int(u->player->x)/10,int(u->player->y)/10);
-                OkK = false;
-            }
-            u->updateInput(Trace[int(u->player->x)/10][int(u->player->y)/10],MainCharacter);
+void Bot::genBot()
+{
+    long long Now = Logic::currentTime();
+    if (Now - lastGen >= 3300)
+    {
+        int x = 0, y = 0;
+        while (Logic::canMove(x,y,Up) == 0)
+        {
+            x = Logic::Rand(900,3300);
+            y = Logic::Rand(900,3300);
+        }
+        int t = Logic::Rand(1,3);
+
+        Bot *newBot;
+        switch (t)
+        {
+        case 1:
+             newBot = new Bot(x,y,"img/Bot_1.png");
+             break;
+        case 2:
+             newBot = new Bot(x,y,"img/Bot_2.png");
+             break;
+        case 3:
+            newBot = new Bot(x,y,"img/Bot_3.png");
+            break;
+        }
+        Bot::bot.push_back(newBot);
+        lastGen = Now;
     }
 }

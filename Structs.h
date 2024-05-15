@@ -28,7 +28,9 @@ public:
   SDL_Rect *destRect;
   bool Space;
   int currentDir;
-  int hp;
+  int hp,maxHp;
+  int magazine,maxMagazine;
+  int numGren,maxGren;
 };
 
 
@@ -64,7 +66,7 @@ public:
 class Bullet
 {
 public:
-    Bullet(const char* filename, int x, int y, int dir);
+    Bullet(const char* filename, int x, int y, int dir, Entity *owner);
     ~Bullet();
     void loadTexture(const char *filename);
     void update();
@@ -75,6 +77,7 @@ public:
     SDL_Rect *destRect;
     int dx,dy,speed;
     int dir;
+    Entity *owner;
     int Time;
 };
 
@@ -98,6 +101,7 @@ public:
     void update();
     void shot();
 public:
+    static void updateAllBullet();
     static std::list<Bullet*> bullet;
 };
 class Sword : public Weapon
@@ -119,6 +123,41 @@ public:
     ~Explosion();
     void update();
     void setUp(int x, int y);
+    static list<Explosion*> allExplosion;
+    void updateAllExplosion();
+};
+
+class Death
+{
+    public:
+        SDL_Texture *texture;
+        SDL_Rect *srcRect;
+        SDL_Rect *destRect;
+        int Time;
+        Death(const char *filename, int x, int y);
+        ~Death();
+        void update();
+        static list<Death*> dead;
+        static void updateAllDeath();
+};
+enum ItemName
+{
+    Health = 1, Magazine = 2, Gren = 3
+};
+class Item
+{
+    public:
+        SDL_Texture *texture;
+        SDL_Rect *srcRect;
+        SDL_Rect *destRect;
+        long long Time;
+        Item(const char *filename, int x, int y, ItemName nameItem);
+        ~Item();
+        bool update();
+        ItemName nameItem;
+        static list<Item*> allItem;
+        static void updateAllItem();
+        static void genItem();
 };
 
 class Grenade : public Weapon
@@ -146,10 +185,13 @@ public:
 };
 
 
+
+
 class Character {
 public:
     Character();
     ~Character();
+    Character(const char *filename);
     void update();
 public:
     Entity *player;
@@ -165,9 +207,11 @@ class Bot : public Character
 public:
     Bot();
     ~Bot();
+    Bot(int x, int y, const char *filename);
     void updateInput(int dir,Character *MainCharacter);
     static list<Bot*> bot;
     static void updateAllBot(Character *MainCharacter);
+    static void genBot();
 };
 
 #endif // STRUCTS_H

@@ -17,14 +17,22 @@ public:
     {
         return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     }
-    static bool intersect(SDL_Rect *a, SDL_Rect *b)
+    static int Distance (SDL_Rect *a, SDL_Rect *b)
+    {
+        return abs(a->x-b->x) + abs(a->y-b->y);
+    }
+    static int intersect(SDL_Rect *a, SDL_Rect *b)
     {
         if (a->x == b->x && a->y == b->y && a->w == b->w && a->h == b->h) return false;
         int x = max(a->x,b->x);
         int y = max(a->y,b->y);
         int u = min(a->x+a->w,b->x+b->w);
         int v = min(a->y+b->h,b->y+b->h);
-        return x < u && y < v;
+        if (x < u && y < v)
+        {
+            return (u-x)*(v-y);
+        }
+        return 0;
     }
     static int Rand(int l, int r)
     {
@@ -74,28 +82,27 @@ public:
         int y = a->y / 48;
         int u = (b->x+47) / 48;
         int v = b->y / 48;
-        if (abs(a->x-b->x) <= 20)
+        if (abs(a->x-b->x) <= 10)
         {
-            if (a->y >= b->y)
+            if (a->y >= b->y && a->y - b->y <= 400)
             {
                 if (Map::blockedSize(u,v,x,y)) return 0;
                 return Up;
             }
-            else
+            else if (a->y <= b->y && b->y -a->y <= 400)
             {
                 if (Map::blockedSize(x,y,u,v)) return 0;
                 return Down;
             }
         }
-        if (abs(a->y-b->y) <= 20)
+        if (abs(a->y-b->y) <= 10)
         {
-            if (a->x <= b->x)
+            if (a->x <= b->x && b->x - a->x <= 400)
             {
-                cout << x << ' ' << y << ' ' << u << ' ' << v <<  ' ' << Map::blockedSize(x,y,u,v) << " ??\n";
                 if (Map::blockedSize(x,y,u,v)) return 0;
                 return Right;
             }
-            else
+            else if (a->x >= b->x && a->x - b->x <= 400)
             {
                 if (Map::blockedSize(u,v,x,y)) return 0;
                 return Left;

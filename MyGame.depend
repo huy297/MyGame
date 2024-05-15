@@ -76,64 +76,69 @@
 	"logic.h"
 	<queue>
 
-1715672115 source:c:\users\pcm\documents\mygame\game.cpp
+1715733972 source:c:\users\pcm\documents\mygame\game.cpp
 	"Game.h"
 	"Defs.h"
 	"map.h"
 	"Graphics.h"
 	<iostream>
+	<SDL_mixer.h>
 
-1715630588 c:\users\pcm\documents\mygame\game.h
+1715732239 c:\users\pcm\documents\mygame\game.h
 	"defs.h"
 	"Structs.h"
 	<vector>
 	<SDL.h>
 	<SDL_Image.h>
 
-1715631454 c:\users\pcm\documents\mygame\defs.h
+1715694203 c:\users\pcm\documents\mygame\defs.h
 
-1715672100 c:\users\pcm\documents\mygame\structs.h
+1715731227 c:\users\pcm\documents\mygame\structs.h
 	<SDL.h>
 	<list>
 
-1715630588 c:\users\pcm\documents\mygame\map.h
+1715709876 c:\users\pcm\documents\mygame\map.h
 	"Game.h"
 	"Defs.h"
 	<string>
 	<SDL.h>
 
-1715630588 c:\users\pcm\documents\mygame\graphics.h
+1715733015 c:\users\pcm\documents\mygame\graphics.h
 	"Game.h"
 	"structs.h"
 	"map.h"
+	<SDL_ttf.h>
+	<bits/stdc++.h>
+	<SDL_mixer.h>
 
-1715630588 source:c:\users\pcm\documents\mygame\graphics.cpp
+1715732626 source:c:\users\pcm\documents\mygame\graphics.cpp
 	"Graphics.h"
 	<bits/stdc++.h>
 
-1715630588 source:c:\users\pcm\documents\mygame\main.cpp
+1715732268 source:c:\users\pcm\documents\mygame\main.cpp
 	<SDL.h>
 	"Game.h"
 	"Defs.h"
 	"Graphics.h"
 	"Structs.h"
 
-1715630588 source:c:\users\pcm\documents\mygame\map.cpp
+1715709779 source:c:\users\pcm\documents\mygame\map.cpp
 	"map.h"
 	"Graphics.h"
 	"Game.h"
 	"iostream"
 	<string.h>
 
-1715672060 source:c:\users\pcm\documents\mygame\struct.cpp
+1715733927 source:c:\users\pcm\documents\mygame\struct.cpp
 	"Structs.h"
 	"Graphics.h"
 	"Logic.h"
 	"Math.h"
 	"Algo.h"
 	<iostream>
+	<SDL_mixer.h>
 
-1715672017 c:\users\pcm\documents\mygame\logic.h
+1715722065 c:\users\pcm\documents\mygame\logic.h
 	"map.h"
 	"defs.h"
 	"iostream"
@@ -141,9 +146,10 @@
 	<bits/stdc++.h>
 	<SDL.h>
 
-1715672025 c:\users\pcm\documents\mygame\algo.h
+1715712323 c:\users\pcm\documents\mygame\algo.h
 	"defs.h"
 	"map.h"
 	"logic.h"
+	<algorithm>
 	<queue>
 

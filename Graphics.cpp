@@ -24,6 +24,7 @@ void Graphics::blitRect(SDL_Texture *texture, SDL_Rect *src, SDL_Rect *dest)
     dest->y += __OffSet_Y;
 }
 
+
 void Graphics::backGround(SDL_Texture *texture, SDL_Rect *src, SDL_Rect *dest)
 {
    // cout << dest->x << ' ' << dest->y << " current is " << endl;
@@ -43,6 +44,16 @@ void Graphics::drawWeapon(Weapon *weapon)
 {
 
     Graphics::blitRect(weapon->texture,weapon->srcRect,weapon->destRect);
+}
+
+void Graphics::drawDeath(Death *dead)
+{
+    Graphics::blitRect(dead->texture,dead->srcRect,dead->destRect);
+}
+
+void Graphics::drawItem(Item *item)
+{
+    Graphics::blitRect(item->texture,item->srcRect,item->destRect);
 }
 
 void Graphics::drawWeaponEffect(WeaponEffect *eff)
@@ -93,6 +104,15 @@ void Graphics::drawAll()
         drawCharacter(x);
     }
 
+    for (Death *dak : Death::dead)
+    {
+        drawDeath(dak);
+    }
+
+    for (Item *item : Item::allItem)
+    {
+        drawItem(item);
+    }
 }
 
 void Graphics::drawMap(Map *MAP)

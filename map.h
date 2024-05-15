@@ -19,7 +19,7 @@ public:
     SDL_Rect *srcRect;
 public:
     static bool isWalkable[MAPSIZE][MAPSIZE];
-    static bool isBlocked[MAPSIZE][MAPSIZE];
+    static int isBlocked[MAPSIZE][MAPSIZE];
     static int numBlocked[MAPSIZE][MAPSIZE];
     static int blockedSize (int x, int y, int u, int v)
     {
