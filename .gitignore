@@ -1,0 +1,29 @@
+# Build output
+/build/
+bin/
+obj/
+
+# Compiled objects / binaries
+*.o
+*.obj
+*.exe
+*.out
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+
+# Code::Blocks generated
+*.depend
+*.layout
+
+# Bundled runtime libs are no longer committed (system SDL2 via package manager)
+*.dll
+
+# OS / editor
+.DS_Store
+.cache/
+.vscode/
+
